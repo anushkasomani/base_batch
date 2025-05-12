@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
 import { ImageIcon, Wand2 } from "lucide-react";
@@ -7,18 +6,6 @@ import { HistoryItem } from "@/lib/types";
 import { ImageUpload } from "../components/ImageUpload";
 import { ImagePromptInput } from "../components/ImagePromptInput";
 import { ImageResultDisplay } from "../components/ImageResultDisplay";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-
-// Backend service URL
-const UPLOAD_SERVICE_URL = "https://uni-r63q.onrender.com";
-
-// Removed all IPFS-related logic, including state variables, functions, and references.
-
 export default function GenerateImage() {
   const [image, setImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);

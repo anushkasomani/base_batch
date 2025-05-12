@@ -1,8 +1,10 @@
 "use client";
 import { Button } from "./ui/button";
-import { Download, RotateCcw, MessageCircle, Sparkles } from "lucide-react";
+import { Download, RotateCcw, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { HistoryItem, HistoryPart } from "@/lib/types";
+import {Address} from "@coinbase/onchainkit/identity"
+import { useAccount } from "wagmi";
 
 interface ImageResultDisplayProps {
   imageUrl: string;
@@ -10,7 +12,6 @@ interface ImageResultDisplayProps {
   petName: string | null;
   onReset: () => void;
   conversationHistory?: HistoryItem[];
-  onMintNFT?: () => Promise<any>; // New prop for minting NFT
 }
 
 export function ImageResultDisplay({
@@ -19,11 +20,9 @@ export function ImageResultDisplay({
   petName,
   onReset,
   conversationHistory = [],
-  onMintNFT, // New prop
 }: ImageResultDisplayProps) {
+  const { address, isConnected } = useAccount();
   const [showHistory, setShowHistory] = useState(false);
-  const [isMinting, setIsMinting] = useState(false); // Track minting state
-  const [mintStatus, setMintStatus] = useState<string | null>(null); // Track minting status
 
   const handleDownload = () => {
     // Create a temporary link element
@@ -39,105 +38,117 @@ export function ImageResultDisplay({
     setShowHistory(!showHistory);
   };
 
-  // New function to handle minting NFT
-  const handleMintNFT = async () => {
-    if (!onMintNFT) return;
-    
-    try {
-      setIsMinting(true);
-      setMintStatus("Minting your NFT pet...");
-      
-      // Call the provided mint function
-      const result = await onMintNFT();
-      
-      // Show success with IPFS link if available
-      if (result?.metadata?.url) {
-        setMintStatus(`Success! Your NFT pet is now stored on IPFS: ${result.metadata.url}`);
-      } else {
-        setMintStatus("Your NFT pet has been minted successfully!");
-      }
-    } catch (error) {
-      console.error("Minting error:", error);
-      setMintStatus(`Failed to mint: ${error instanceof Error ? error.message : "Unknown error"}`);
-    } finally {
-      setIsMinting(false);
-    }
+  const handleMintNFT= async () => {
+    console.log(imageUrl)
+     if (!imageUrl.startsWith("data:image")) {
+    console.error("Invalid image data URL");
+    return;
+  }
+
+  // Extract base64 data from the imageUrl
+  const base64Data = imageUrl.split(",")[1];
+  const binary = atob(base64Data);
+  const array = Uint8Array.from(binary, char => char.charCodeAt(0));
+  const file = new File([array], "pet-image.png", { type: "image/png" });
+
+  // Step 1: Upload image to Irys
+  const formData1 = new FormData();
+  formData1.append("file", file);
+  formData1.append("tags", JSON.stringify([{ name: "application-id", value: "MyNFTDrop" }]));
+
+  const imgRes = await fetch("/api/irys/upload-file", {
+    method: "POST",
+    body: formData1,
+  });
+
+  if (!imgRes.ok) {
+    const err = await imgRes.json();
+    throw new Error("Image upload failed: " + err.error);
+  }
+
+  const imgResData = await imgRes.json();
+  const imgTxId = imgResData.id;
+  const imageIrysUrl = `https://gateway.irys.xyz/mutable/${imgTxId}`;
+
+  // Step 2: Upload metadata file (as the evolving data)
+  const metadata = {
+    name: petName,
+    backstory,
+    image: imageIrysUrl,
+    creator: address,
   };
+
+  const metadataBlob = new Blob([JSON.stringify(metadata)], { type: "application/json" });
+  const metadataFile = new File([metadataBlob], "metadata.json");
+
+  const formData2 = new FormData();
+  formData2.append("file", metadataFile);
+  formData2.append("tags", JSON.stringify([{ name: "Root-TX", value: imgTxId }]));
+
+  const metaRes = await fetch("/api/irys/upload-file", {
+    method: "POST",
+    body: formData2,
+  });
+
+  if (!metaRes.ok) {
+    const err = await metaRes.json();
+    throw new Error("Metadata upload failed: " + err.error);
+  }
+
+  const metaResData = await metaRes.json();
+  
+  const NFTTxId = metaResData.id;
+  const NFTIrysUrl = `https://gateway.irys.xyz/mutable/${NFTTxId}`;
+
+  console.log("Success!");
+  console.log("image TX:", imageIrysUrl);
+  console.log("NFT metadata TX:", `https://gateway.irys.xyz/mutable/${NFTTxId}`);
+  }
 
   return (
     <div className="p-6">
-      
+      <div className="flex flex-col md:flex-row justify-between space-x-0 md:space-x-10">
+        <div className="rounded-lg bg-muted p-1">
+          <img
+            src={imageUrl}
+            alt="Generated"
+            className="max-w-[320px] h-auto w-[300px]"
+          />
+        </div>
 
-<div className="flex flex-col md:flex-row justify-between space-x-0 md:space-x-10">
- <div className="rounded-lg  bg-muted p-1">
-        <img
-          src={imageUrl}
-          alt="Generated"
-          className="max-w-[320px] h-auto w-[300px]"
-        />
-      </div>
-     
-       <div className="flex flex-col ">
-         <div className="p-1 rounded-lg bg-muted">
-          
-          <h1 className="text-2xl text-muted-foreground font-pixelify">{petName}</h1>
+        <div className="flex flex-col">
+          <div className="p-1 rounded-lg bg-muted">
+            <h1 className="text-2xl text-muted-foreground font-pixelify">{petName}</h1>
+          </div>
+
+          <div className="p-1 rounded-lg bg-muted">
+            <h3 className="text-xl font-medium mb-2 font-pixelify">Lore-</h3>
+            <p className="text-md text-muted-foreground font-courier-prime">{backstory}</p>
+          </div>
         </div>
-     
-      
-        <div className="p-1 rounded-lg bg-muted">
-          <h3 className="text-xl font-medium mb-2 font-pixelify">Lore-</h3>
-          <p className="text-md text-muted-foreground font-courier-prime">{backstory}</p>
-        </div>
-       </div>
-      <div className="flex items-center justify-between">
-        
-        <div className="space-x-2 flex flex-col space-y-2">
-          <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={handleDownload}>
-            <Download className="w-4 h-4 mr-2" />
-            Download
-          </Button>
-          {conversationHistory.length > 0 && (
-            <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={toggleHistory}>
-              <MessageCircle className="w-4 h-4 mr-2" />
-              {showHistory ? "Hide History" : "Show History"}
+
+        <div className="flex items-center justify-between">
+          <div className="space-x-2 flex flex-col space-y-2">
+            <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={handleDownload}>
+              <Download className="w-4 h-4 mr-2" />
+              Download
             </Button>
-          )}
-          <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={onReset}>
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Create New Image
-          </Button>
-          {onMintNFT && (
-          <Button
-        onClick={handleMintNFT}
-        disabled={isMinting}
-        className="outline sm bg-cyan-500 hover:bg-cyan-600 text-white font-pixelify"
-          >
-        <Sparkles className="w-4 h-4 mr-2" />
-        {isMinting ? "Minting NFT..." : "Mint NFT Pet"}
-          </Button>
-        )}
+            {conversationHistory.length > 0 && (
+              <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={toggleHistory}>
+                <MessageCircle className="w-4 h-4 mr-2" />
+                {showHistory ? "Hide History" : "Show History"}
+              </Button>
+            )}
+            <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={onReset}>
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Create New Image
+            </Button>
+             <Button className="outline sm bg-[#C9C9AA] font-pixelify" onClick={handleMintNFT}>
+              Create
+            </Button>
+          </div>
         </div>
       </div>
-</div>
-
-      {onMintNFT && (
-        <div className="mt-4 flex flex-col items-center">
-         
-          
-          {/* Show mint status message */}
-          {mintStatus && (
-            <div className={`mt-2 p-3 rounded-md w-full text-sm ${
-              mintStatus.includes("Failed") || mintStatus.includes("failed")
-                ? "bg-red-100 text-red-700"
-                : mintStatus.includes("Success") || mintStatus.startsWith("Your NFT")
-                  ? "bg-green-100 text-green-700"
-                  : "bg-blue-100 text-blue-700"
-            }`}>
-              {mintStatus}
-            </div>
-          )}
-        </div>
-      )}
 
       {showHistory && conversationHistory.length > 0 && (
         <div className="p-4 rounded-lg font-courier-prime">

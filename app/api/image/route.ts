@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { HistoryItem, HistoryPart } from "@/lib/types";
-import { text } from "stream/consumers";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
@@ -147,7 +146,7 @@ function buildMessageParts(prompt: string, backstory: string, inputImage: string
   const messageParts: any[] = [
     { text: `Backstory: ${backstory}` }, 
     { text: `You are an agent which generates NFT pets.
-      If nothing specified in the prompt, then generate an square image of a baby pet mentioned in the prompt. If no art style mentioned,
+      If nothing specified in the prompt, then generate an square baby(strictly) image of the animal mentioned in the prompt. If no art style mentioned,
       generate in the standard way NFTs are. Generate high quality aesthetic art` }, 
     { text: `Prompt given by the user: ${prompt}` },
     { text: `Art style: ${artStyle || "Standard"}` },

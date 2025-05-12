@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef } from 'react';
+import {Wallet} from "@coinbase/onchainkit/wallet";
 
 export default function Home() {
   const [fundMessage, setFundMessage] = useState('');
@@ -125,6 +126,7 @@ export default function Home() {
 
   return (
     <div className="p-5 max-w-xl mx-auto">
+      <Wallet/>
       <h1 className="text-2xl font-bold mb-6">Irys Uploader & Evolver</h1>
 
       {/* Fund */}
