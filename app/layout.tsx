@@ -2,6 +2,28 @@ import '@coinbase/onchainkit/styles.css';
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
+import { Pixelify_Sans } from "next/font/google";
+import { Courier_Prime } from "next/font/google";
+import { Press_Start_2P } from "next/font/google";
+
+const pressStart2P = Press_Start_2P({ 
+  subsets: ["latin"],  
+  weight: ["400"],
+  variable: "--font-press-start-2p", })
+
+const pixelify = Pixelify_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'], // Specify the weights you need
+  display: 'swap',
+  variable: '--font-pixelify',
+})
+
+const courierPrime = Courier_Prime({
+  subsets: ['latin'],
+  weight: ['400', '700'], // Specify the weights you need
+  display: 'swap',
+  variable: '--font-courier-prime',
+})
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME,
@@ -15,7 +37,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-background dark">
+      <body 
+      className={`${pixelify.variable} ${courierPrime.variable} ${pressStart2P.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>
