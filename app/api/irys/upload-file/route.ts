@@ -4,7 +4,7 @@ import { BaseEth } from "@irys/upload-ethereum";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { tmpdir } from "os";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid"
 
 export async function POST(req: NextRequest) {
   try {
