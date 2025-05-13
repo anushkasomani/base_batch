@@ -47,9 +47,9 @@ export default function HomepagePreview() {
       {/* Container for content with padding to center it */}
       <div className="relative min-h-screen w-full flex items-center justify-center p-4">
         {/* Scrollable content box that takes 80% of viewport */}
-        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-4 flex items-center justify-center flex-col space-y-1">
+        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-6 flex  flex-col space-y-1">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-3">Featured Pets</h2>
+            <h2 className="text-xl font-semibold text-[#875131] mb-8 font-press-start-2p text-center">Featured Pets</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {petData.map((pet) => (
                 <PetCard key={pet.petId} {...pet} />
