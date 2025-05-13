@@ -1,60 +1,94 @@
-'use client'
-import React from 'react';
-import PetCard from '../components/AuctionCard';
-import TiltedCard from '../components/TiltedCard';
+"use client";
+import React, { useEffect, useState } from "react";
+import { BrowserProvider, Contract } from "ethers";
+import PetCard from "../components/AuctionCard"; 
+import abi from '../../utils/abi.json';
 
-const petData = [
-  {
-    petId: '123',
-    name: 'Sharky',
-    evolutionLevel: 1,
-    stats: { engagement: 12, happiness: 9, memePower: 80 },
-    imageSrc: '/show1.png',
-    avatarSrc: '/avatars/sharky-avatar.png',
-  },
-  {
-    petId: '456',
-    name: 'Bubbles',
-    evolutionLevel: 2,
-    stats: { engagement: 15, happiness: 12, memePower: 65 },
-    imageSrc: '/show2.png',
-    avatarSrc: '/avatars/bubbles-avatar.png',
-  },
-  {
-    petId: '789',
-    name: 'Nemo',
-    evolutionLevel: 3,
-    stats: { engagement: 20, happiness: 18, memePower: 90 },
-    imageSrc: '/show3.png',
-    avatarSrc: '/avatars/nemo-avatar.png',
-  },
-];
+const NFT_CONTRACT_ADDRESS="0xb861231baD0dEb2dfB436B6b722902e533b76933";
 
 export default function HomepagePreview() {
+  const [nfts, setNfts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNFTs = async () => {
+      try {
+        setLoading(true);
+        const provider = new BrowserProvider(window.ethereum);
+        const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+
+        const totalSupply = await contract.totalSupply();
+        const nftList = [];
+
+        for (let i = 0; i < Number(totalSupply); i++) {
+          const tokenId = await contract.tokenByIndex(i);
+          const owner = await contract.ownerOf(tokenId);
+          const tokenURI = await contract.tokenURI(tokenId);
+
+          // If IPFS, convert to gateway URL
+          let metadataUrl = tokenURI;
+          if (tokenURI.startsWith("ipfs://")) {
+            metadataUrl = tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/");
+          }
+
+          // Fetch metadata
+          let image = "";
+          try {
+            const res = await fetch(metadataUrl);
+            const metadata = await res.json();
+            image = metadata.image || metadata.image_url || "";
+            if (image.startsWith("ipfs://")) {
+              image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+            }
+          } catch {
+            image = "";
+          }
+
+          nftList.push({
+            tokenId: tokenId.toString(),
+            owner,
+            image,
+            metadataUrl,
+          });
+        }
+        setNfts(nftList);
+      } catch (err) {
+        console.error("Error fetching NFTs:", err);
+      }
+      setLoading(false);
+    };
+
+    fetchNFTs();
+  }, []);
+
   return (
     <div className="relative min-h-screen w-full">
       <div
         className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/igb.png)' }}
+        style={{ backgroundImage: "url(/igb.png)" }}
       />
-      
-      {/* <img
-        src="/ret.png"
-        alt="Dog"
-        className="absolute bottom-0 left-0 z-40 w-[250px] h-auto max-w-full md:max-w-[30%] sm:max-w-[40%]"
-      /> */}
-      
-      {/* Container for content with padding to center it */}
       <div className="relative min-h-screen w-full flex items-center justify-center p-4">
-        {/* Scrollable content box that takes 80% of viewport */}
-        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-6 flex  flex-col space-y-1">
+        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-4 flex items-center justify-center flex-col space-y-1">
+        {/* <Wallet/> */}
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-[#875131] mb-8 font-press-start-2p text-center">Featured Pets</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {petData.map((pet) => (
-                <PetCard key={pet.petId} {...pet} />
-              ))}
-            </div>
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+              Minted NFTs
+            </h2>
+            {loading ? (
+              <div className="text-gray-500">Loading...</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {nfts.map((nft) => (
+                  <PetCard
+                    key={nft.tokenId}
+                    petId={nft.tokenId}
+                    imageSrc={nft.image}
+                    owner={nft.owner}
+                    metadataUrl={nft.metadataUrl}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
