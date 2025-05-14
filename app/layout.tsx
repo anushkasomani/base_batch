@@ -5,7 +5,7 @@ import { Providers } from './providers';
 import { Pixelify_Sans } from "next/font/google";
 import { Courier_Prime } from "next/font/google";
 import { Press_Start_2P } from "next/font/google";
-
+import { Toaster } from 'react-hot-toast';
 const pressStart2P = Press_Start_2P({ 
   subsets: ["latin"],  
   weight: ["400"],
@@ -40,6 +40,7 @@ export default function RootLayout({
       <body 
       className={`${pixelify.variable} ${courierPrime.variable} ${pressStart2P.variable} antialiased`}>
         <Providers>{children}</Providers>
+           <Toaster position="top-center" reverseOrder={false} />
       </body>
     </html>
   );

@@ -6,29 +6,26 @@ import Link from "next/link";
 
 export default function PetDetails() {
   const searchParams = useSearchParams();
-
-  // Get all parameters from the URL
   const petId = searchParams.get("petId");
   const name = searchParams.get("name");
   const imageSrc = searchParams.get("imageSrc");
-  const metadatUrl = searchParams.get("metadataUrl");
+  const metadataUrl = searchParams.get("metadataUrl");
   const owner = searchParams.get("owner");
-
-  // Parse the stats from URL parameters
-  const engagement = searchParams.get("stats.engagement");
+  const description = searchParams.get("description");
   const happiness = searchParams.get("stats.happiness");
   const memePower = searchParams.get("stats.memePower");
+  const level= searchParams.get("stats.level");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
       <div className="max-w-4xl mx-auto bg-white/90 shadow-2xl rounded-2xl p-8">
-        <h1 className="text-3xl font-extrabold mb-8 text-gray-700 text-center tracking-tight">
-          Pet Details
+        <h1 className="text-2xl font-press-start-2p mb-8 text-gray-700 text-center tracking-tight">
+          {name}
         </h1>
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-10">
-          <div className="w-full md:w-1/2 flex justify-center">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10">
+          <div className="w-full lg:w-1/2 flex justify-center">
             {imageSrc && (
-              <div className="bg-gray-100 rounded-xl border border-gray-200 shadow-md p-4 flex items-center justify-center w-80 h-80">
+              <div className="bg-gray-100 rounded-xl border border-gray-200 shadow-lg p-4 flex items-center justify-center w-80 h-80 transform transition duration-300 hover:scale-105 hover:brightness-105">
                 <Image
                   src={imageSrc}
                   alt={name || "Pet"}
@@ -40,74 +37,58 @@ export default function PetDetails() {
               </div>
             )}
           </div>
-          <div className="w-full md:w-1/2 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-lg shadow p-4 flex flex-col items-center">
-                <span className="text-xl font-bold text-pink-600">
-                  ❤️ {engagement}
-                </span>
-                <span className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
-                  Engagement
-                </span>
-              </div>
-              <div className="bg-gray-50 rounded-lg shadow p-4 flex flex-col items-center">
-                <span className="text-xl font-bold text-yellow-500">
-                  😊 {happiness}
-                </span>
-                <span className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
-                  Happiness
-                </span>
-              </div>
-              <div className="bg-gray-50 rounded-lg shadow p-4 flex flex-col items-center">
-                <span className="text-xl font-bold text-orange-600">
-                  🔥 {memePower}
-                </span>
-                <span className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
-                  Meme Power
-                </span>
-              </div>
+
+          <div className="w-full lg:w-1/2 space-y-4">
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Pet ID:</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all font-mono">{petId}</p>
             </div>
-            <div className=" rounded-lg p-4 shadow mt-4">
-              <p className="font-mono text-sm text-gray-700 mb-1">
-                ID:{" "}
-                <p className="text-xs text-gray-500 break-all font-mono bg-gray-100 p-1.5 rounded mb-2">
-                  {petId}
-                </p>
-              </p>
-              <p className="font-mono text-sm text-gray-700 mb-1 break-all">
-                Owner:{" "}
-                <p className="text-xs text-gray-500 break-all font-mono bg-gray-100 p-1.5 rounded mb-2">
-                  {owner}
-                </p>
-              </p>
-              <p className="font-mono text-sm text-gray-700 mb-1 break-all">
-                Metadata:{" "}
-                <p className="text-xs text-gray-500 break-all font-mono bg-gray-100 p-1.5 rounded mb-2">
-                  <Link
-                    href={`${metadatUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 break-all"
-                  >
-                    {metadatUrl}
-                  </Link>
-                </p>
-              </p>
-              <p className="font-mono text-sm text-gray-700 break-all">
-                Image:{" "}
-                <p className="text-xs text-gray-500 break-all font-mono bg-gray-100 p-1.5 rounded mb-2">
-                  <Link
-                    href={`${imageSrc}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 break-all"
-                  >
-                    {imageSrc}
-                  </Link>
-                </p>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Lore:</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-words font-courier-prime">
+                {description || "This pet has no lore yet..."}
               </p>
             </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Level</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{level}</p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Happiness ❤️</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{happiness}</p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Power ⚡</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{memePower}</p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Creator Address:</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all">{owner}</p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Metadata URL:</p>
+              <Link
+                href={metadataUrl ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-md text-blue-600 hover:underline break-all"
+              >
+                {metadataUrl}
+              </Link>
+            </div>
+
+            <button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 mt-4 rounded-lg font-semibold shadow transition duration-200"
+              onClick={() => alert("Hook this up to evolve logic")}
+            >
+              Evolve Pet
+            </button>
           </div>
         </div>
       </div>

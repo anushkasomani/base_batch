@@ -68,26 +68,26 @@ export default function HomepagePreview() {
         style={{ backgroundImage: "url(/igb.png)" }}
       />
       <div className="relative min-h-screen w-full flex items-center justify-center p-4">
-        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-4 flex items-center justify-center flex-col space-y-1">
+        <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-8 flex items-center justify-center flex-col space-y-1">
         {/* <Wallet/> */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+            <h2 className="text-xl font-semibold text-gray-700 mb-7 font-press-start-2p text-center">
               Minted NFTs
             </h2>
             {loading ? (
               <div className="text-gray-500">Loading...</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
                 {nfts.map((nft) => (
                   <PetCard
-                    key={nft.tokenId}
-                    petId={nft.tokenId}
-                    imageSrc={nft.image}
-                    owner={nft.owner}
-                    metadataUrl={nft.metadataUrl}
+                  key={nft.tokenId}
+                  petId={nft.tokenId}
+                  imageSrc={nft.image}
+                  owner={nft.owner}
+                  metadataUrl={nft.metadataUrl}
                   />
                 ))}
-              </div>
+                </div>
             )}
           </div>
         </div>
