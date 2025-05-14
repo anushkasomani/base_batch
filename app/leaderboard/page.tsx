@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import abi from "../../utils/abi.json";
 
-const NFT_CONTRACT_ADDRESS = "0xb861231baD0dEb2dfB436B6b722902e533b76933";
+const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
 export default function TrendingPage() {
   const [nfts, setNfts] = useState([]);
@@ -95,7 +95,7 @@ export default function TrendingPage() {
                     <th className="p-3">Image</th>
                     <th className="p-3">Name</th>
                     <th className="p-3">Creator</th>
-                    <th className="p-3">🔥Power</th>
+                    <th className="p-3">🔥Points</th>
                   </tr>
                 </thead>
                 <tbody>

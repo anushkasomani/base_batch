@@ -12,10 +12,12 @@ export default function PetDetails() {
   const metadataUrl = searchParams.get("metadataUrl");
   const owner = searchParams.get("owner");
   const description = searchParams.get("description");
+  const multiplier = searchParams.get("multiplier");
   const backstory = searchParams.get("backstory");
   const happiness = searchParams.get("stats.happiness");
   const memePower = searchParams.get("stats.memePower");
   const level = searchParams.get("stats.level");
+  const points = Number(multiplier) * (Number(happiness) + Number(memePower));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
@@ -74,6 +76,20 @@ export default function PetDetails() {
               <p className="text-lg font-semibold text-gray-800">Power ⚡</p>
               <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">
                 {memePower}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Multiplier:</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all">
+                {multiplier}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Points 🔥</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all">
+                {points}
               </p>
             </div>
 

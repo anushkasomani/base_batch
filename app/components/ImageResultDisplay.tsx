@@ -30,8 +30,8 @@ export function ImageResultDisplay({
   const { address, isConnected } = useAccount();
   const [showHistory, setShowHistory] = useState(false);
 
-  const clickContractAddress = "0xb861231baD0dEb2dfB436B6b722902e533b76933";
- 
+  const clickContractAddress = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
+
   const handleDownload = () => {
     // Create a temporary link element
     const link = document.createElement("a");
@@ -187,10 +187,7 @@ export function ImageResultDisplay({
             >
               Create
             </Button> */}
-            <Transaction
-              chainId={84532}
-              calls={handleMintNFT}
-            >
+            <Transaction chainId={84532} calls={handleMintNFT}>
               <TransactionButton
                 className=" text-white rounded-lg px-6 py-3 font-bold"
                 text="Mint NFT"
