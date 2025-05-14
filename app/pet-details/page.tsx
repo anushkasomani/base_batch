@@ -12,9 +12,10 @@ export default function PetDetails() {
   const metadataUrl = searchParams.get("metadataUrl");
   const owner = searchParams.get("owner");
   const description = searchParams.get("description");
+  const backstory = searchParams.get("backstory");
   const happiness = searchParams.get("stats.happiness");
   const memePower = searchParams.get("stats.memePower");
-  const level= searchParams.get("stats.level");
+  const level = searchParams.get("stats.level");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
@@ -23,7 +24,7 @@ export default function PetDetails() {
           {name}
         </h1>
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10">
-          <div className="w-full lg:w-1/2 flex justify-center">
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center space-y-10">
             {imageSrc && (
               <div className="bg-gray-100 rounded-xl border border-gray-200 shadow-lg p-4 flex items-center justify-center w-80 h-80 transform transition duration-300 hover:scale-105 hover:brightness-105">
                 <Image
@@ -36,43 +37,59 @@ export default function PetDetails() {
                 />
               </div>
             )}
+
+            <div>
+              <p className="text-lg font-semibold text-gray-800">Lore:</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-words font-courier-prime">
+                {description || backstory || "This pet has no lore yet..."}
+              </p>
+            </div>
           </div>
 
           <div className="w-full lg:w-1/2 space-y-4">
             <div>
               <p className="text-lg font-semibold text-gray-800">Pet ID:</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all font-mono">{petId}</p>
-            </div>
-
-            <div>
-              <p className="text-lg font-semibold text-gray-800">Lore:</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-words font-courier-prime">
-                {description || "This pet has no lore yet..."}
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all font-mono">
+                {petId}
               </p>
             </div>
 
             <div>
               <p className="text-lg font-semibold text-gray-800">Level</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{level}</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">
+                {level}
+              </p>
             </div>
 
             <div>
-              <p className="text-lg font-semibold text-gray-800">Happiness ❤️</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{happiness}</p>
+              <p className="text-lg font-semibold text-gray-800">
+                Happiness ❤️
+              </p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">
+                {happiness}
+              </p>
             </div>
 
             <div>
               <p className="text-lg font-semibold text-gray-800">Power ⚡</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">{memePower}</p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">
+                {memePower}
+              </p>
             </div>
 
             <div>
-              <p className="text-lg font-semibold text-gray-800">Creator Address:</p>
-              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all">{owner}</p>
+              <p className="text-lg font-semibold text-gray-800">
+                Creator Address:
+              </p>
+              <p className="text-md bg-gray-100 text-gray-700 p-2 rounded break-all">
+                {owner}
+              </p>
             </div>
 
             <div>
-              <p className="text-lg font-semibold text-gray-800">Metadata URL:</p>
+              <p className="text-lg font-semibold text-gray-800">
+                Metadata URL:
+              </p>
               <Link
                 href={metadataUrl ?? "#"}
                 target="_blank"

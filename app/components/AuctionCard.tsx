@@ -11,6 +11,7 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
   const [petName, setPetName] = useState("Unnamed Pet");
   const [hovered, setHovered] = useState(false);
   const [description, setDescription] = useState("");
+  const [backstory, setBackstory] = useState("");
 
   const extractTxId = (url: string) => url.split("/").pop()!;
 
@@ -22,9 +23,10 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
         if (res.ok) {
           const data = await res.json();
           setAttributes(data.attributes || []);
-          console.log("data",data)
+          console.log("data", data);
           setPetName(data.name || "Unnamed Pet");
           setDescription(data.description || "");
+          setBackstory(data.backstory || "");
         }
       } catch (err) {
         console.error("Error loading metadata:", err);
@@ -47,7 +49,9 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
           const updated = changes.attributes.find(
             (a: any) => a.trait_type === attr.trait_type
           );
-          return updated ? { ...attr, value: attr.value + updated.value } : attr;
+          return updated
+            ? { ...attr, value: attr.value + updated.value }
+            : attr;
         }
         return attr;
       }),
@@ -82,7 +86,9 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
   const feed = async () => {
     const txId = extractTxId(metadataUrl);
     await toast.promise(
-      updateMetadata(txId, { attributes: [{ trait_type: "Happiness", value: 5 }] }),
+      updateMetadata(txId, {
+        attributes: [{ trait_type: "Happiness", value: 5 }],
+      }),
       {
         loading: "Feeding pet...",
         success: "Pet fed successfully!",
@@ -103,9 +109,12 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
     );
   };
 
-  const happiness = attributes.find(attr => attr.trait_type === "Happiness")?.value ?? 0;
-  const power = attributes.find(attr => attr.trait_type === "Power")?.value ?? 0;
-  const level = attributes.find(attr => attr.trait_type === "Level")?.value ?? 1;
+  const happiness =
+    attributes.find((attr) => attr.trait_type === "Happiness")?.value ?? 0;
+  const power =
+    attributes.find((attr) => attr.trait_type === "Power")?.value ?? 0;
+  const level =
+    attributes.find((attr) => attr.trait_type === "Level")?.value ?? 1;
 
   const handleExplore = () => {
     const queryParams = new URLSearchParams({
@@ -115,6 +124,7 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
       metadataUrl,
       name: petName,
       description: description,
+      backstory: backstory,
       "stats.happiness": happiness.toString(),
       "stats.memePower": power.toString(),
       "stats.level": level.toString(),
@@ -134,7 +144,9 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
           src={imageSrc}
           alt="NFT"
           className="w-full h-full object-cover rounded-xl transform transition duration-300 hover:scale-105 hover:brightness-105"
-          onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/150")}
+          onError={(e) =>
+            (e.currentTarget.src = "https://via.placeholder.com/150")
+          }
         />
 
         {hovered && (
@@ -158,7 +170,9 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
       </div>
 
       <div className="p-4">
-        <h2 className="text-base font-press-start text-gray-800 mb-1">{petName}</h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          {petName}
+        </h2>
         <div className="text-sm font-courier-prime text-gray-500 mb-1">
           Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
         </div>
