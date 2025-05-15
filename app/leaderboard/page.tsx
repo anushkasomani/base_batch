@@ -89,7 +89,7 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
           ) : (
             <div className="w-full overflow-x-auto">
               <table className="w-full table-auto text-center border-collapse text-black">
-                <thead className="bg-blue-600">
+                <thead className="bg-green-600">
                   <tr className="text-white">
                     <th className="p-3">Rank</th>
                     <th className="p-3">Image</th>

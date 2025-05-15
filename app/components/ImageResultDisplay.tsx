@@ -280,7 +280,7 @@ const handleMintNFT = async () => {
               calls={handleMintNFT}
             >
               <TransactionButton
-                className=" text-white rounded-lg px-6 py-3 font-bold"
+                className="outline sm bg-[#2D80C0] font-pixelify text-black hover:bg-[#C9C9AA]"
                 text="Mint NFT"
               />
             </Transaction>
