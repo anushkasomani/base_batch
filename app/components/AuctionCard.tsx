@@ -213,7 +213,7 @@ export default function PetCard({
   );
 
   return (
-    <div className="group relative w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 transform transition duration-300 hover:shadow-xl">
+<div className="relative w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 transform transition duration-300 ease-in-out hover:scale-[1.1] hover:shadow-xl">
       <div className="relative w-full h-72 bg-gray-100">
         <img
           src={imageSrc}
@@ -249,7 +249,7 @@ export default function PetCard({
         </div>
         <button
           onClick={handleExplore}
-          className="w-full bg-[#8B4513] hover:bg-purple-800 text-white py-2 px-4 rounded-md text-base flex justify-center items-center gap-2"
+          className="w-full bg-[#8B4513] hover:bg-[#A0522D] text-white py-2 px-4 rounded-md text-base flex justify-center items-center gap-2"
         >
           <Search className="w-5 h-5" /> Explore
         </button>
