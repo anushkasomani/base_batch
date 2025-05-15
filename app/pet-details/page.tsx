@@ -3,6 +3,13 @@
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Transaction,
+  TransactionButton,
+  TransactionToast,
+} from "@coinbase/onchainkit/transaction";
+import { contractAddress } from "../../utils/contractAddress";
+import abi from "../../utils/abi.json";
 
 export default function PetDetails() {
   const searchParams = useSearchParams();
@@ -17,7 +24,23 @@ export default function PetDetails() {
   const happiness = searchParams.get("stats.happiness");
   const memePower = searchParams.get("stats.memePower");
   const level = searchParams.get("stats.level");
+  const NftLevel = searchParams.get("NftLevel");
   const points = Number(multiplier) * (Number(happiness) + Number(memePower));
+
+  const handleLevelUp = async () => {
+    try {
+      return [
+        {
+          address: contractAddress,
+          abi: abi,
+          functionName: "levelUp",
+          args: [petId], // NFTIrysUrl from your upload logic
+        },
+      ];
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
@@ -59,7 +82,7 @@ export default function PetDetails() {
             <div>
               <p className="text-lg font-semibold text-gray-800">Level</p>
               <p className="text-md bg-gray-100 text-gray-700 p-2 rounded">
-                {level}
+                {NftLevel}
               </p>
             </div>
 
@@ -116,12 +139,12 @@ export default function PetDetails() {
               </Link>
             </div>
 
-            <button
-              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 mt-4 rounded-lg font-semibold shadow transition duration-200"
-              onClick={() => alert("Hook this up to evolve logic")}
-            >
-              Evolve Pet
-            </button>
+            <Transaction chainId={84532} calls={handleLevelUp}>
+              <TransactionButton
+                className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
+                text="Evolve"
+              />
+            </Transaction>
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { JsonRpcProvider, Contract } from "ethers";
 import abi from "../../utils/abi.json";
 
-const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
+import { contractAddress } from "../../utils/contractAddress";
 
 export default function TrendingPage() {
   const [nfts, setNfts] = useState([]);
@@ -13,8 +13,10 @@ export default function TrendingPage() {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-       const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL);
-const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+        const provider = new JsonRpcProvider(
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL
+        );
+        const contract = new Contract(contractAddress, abi, provider);
         const totalSupply = await contract.totalSupply();
 
         const nftData = [];

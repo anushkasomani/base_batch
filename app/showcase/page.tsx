@@ -4,8 +4,7 @@ import { BrowserProvider, Contract, JsonRpcProvider } from "ethers";
 import PetCard from "../components/AuctionCard";
 import abi from "../../utils/abi.json";
 import { ethers } from "ethers";
-
-const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
+import { contractAddress } from "../../utils/contractAddress";
 
 export default function HomepagePreview() {
   const [nfts, setNfts] = useState([]);
@@ -15,8 +14,10 @@ export default function HomepagePreview() {
     const fetchNFTs = async () => {
       try {
         setLoading(true);
-        const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL);
-        const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+        const provider = new JsonRpcProvider(
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL
+        );
+        const contract = new Contract(contractAddress, abi, provider);
 
         const totalSupply = await contract.totalSupply();
         const nftList = [];
@@ -25,8 +26,10 @@ export default function HomepagePreview() {
           const tokenId = await contract.tokenByIndex(i);
           const owner = await contract.ownerOf(tokenId);
           const tokenURI = await contract.tokenURI(tokenId);
-          const multiplier = await contract.userTokenMultiplier(owner, tokenId);
+          const multiplier = await contract.tokenIdToMultiplier(tokenId);
           const formatedMultiplier = (parseFloat(multiplier) / 1e18).toFixed(2);
+          const level = await contract.tokenIdToLevel(tokenId);
+          const formatedLevel = (parseFloat(level) / 1e18).toFixed(0);
 
           // If IPFS, convert to gateway URL
           let metadataUrl = tokenURI;
@@ -53,6 +56,7 @@ export default function HomepagePreview() {
             image,
             metadataUrl,
             formatedMultiplier,
+            formatedLevel,
           });
         }
         setNfts(nftList);
@@ -90,6 +94,7 @@ export default function HomepagePreview() {
                     owner={nft.owner}
                     metadataUrl={nft.metadataUrl}
                     multiplier={nft.formatedMultiplier}
+                    NftLevel={nft.formatedLevel}
                   />
                 ))}
               </div>

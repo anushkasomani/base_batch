@@ -10,18 +10,20 @@ import {
   TransactionToast,
   TransactionToastIcon,
   TransactionToastAction,
-  TransactionToastLabel
+  TransactionToastLabel,
 } from "@coinbase/onchainkit/transaction";
-import { clickContractAbi } from "@/utils/contractAbi";
+import { contractAddress } from "../../utils/contractAddress";
+import abi from "../../utils/abi.json";
 import { useCallback } from "react";
-import type { LifecycleStatus } from '@coinbase/onchainkit/transaction'; 
- 
+import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
+
 export default function PetCard({
   petId,
   imageSrc,
   owner,
   metadataUrl,
   multiplier,
+  NftLevel,
 }: any) {
   const router = useRouter();
   const [attributes, setAttributes] = useState<any[]>([]);
@@ -31,7 +33,6 @@ export default function PetCard({
   const [backstory, setBackstory] = useState("");
 
   const extractTxId = (url: string) => url.split("/").pop()!;
-  const clickContractAddress = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -54,76 +55,81 @@ export default function PetCard({
     fetchMetadata();
   }, [metadataUrl]);
 
-const updateMetadata = async (txId: string, changes: any) => {
-  const res = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
-  if (!res.ok) throw new Error("Failed to fetch metadata");
-  const oldMeta = await res.json();
+  const updateMetadata = async (txId: string, changes: any) => {
+    const res = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+    if (!res.ok) throw new Error("Failed to fetch metadata");
+    const oldMeta = await res.json();
 
-  let updatedAttrs = oldMeta.attributes.map((attr: any) => {
-    const updated = changes.attributes?.find(
-      (a: any) => a.trait_type === attr.trait_type
-    );
-    if (updated) {
-      return {
-        ...attr,
-        value: parseFloat((parseFloat(attr.value) + updated.value).toFixed(2)),
-      };
+    let updatedAttrs = oldMeta.attributes.map((attr: any) => {
+      const updated = changes.attributes?.find(
+        (a: any) => a.trait_type === attr.trait_type
+      );
+      if (updated) {
+        return {
+          ...attr,
+          value: parseFloat(
+            (parseFloat(attr.value) + updated.value).toFixed(2)
+          ),
+        };
+      }
+      return attr;
+    });
+
+    // Update Points
+    const happiness =
+      updatedAttrs.find((a) => a.trait_type === "Happiness")?.value ?? 0;
+    const power =
+      updatedAttrs.find((a) => a.trait_type === "Power")?.value ?? 0;
+    const multiplier =
+      updatedAttrs.find((a) => a.trait_type === "Multiplier")?.value ?? 1;
+    const points = parseFloat(((happiness + power) * multiplier).toFixed(2));
+
+    const existingPoints = updatedAttrs.find((a) => a.trait_type === "Points");
+    if (existingPoints) {
+      existingPoints.value = points;
+    } else {
+      updatedAttrs.push({ trait_type: "Points", value: points });
     }
-    return attr;
-  });
 
-  // Update Points
-  const happiness = updatedAttrs.find(a => a.trait_type === "Happiness")?.value ?? 0;
-  const power = updatedAttrs.find(a => a.trait_type === "Power")?.value ?? 0;
-  const multiplier = updatedAttrs.find(a => a.trait_type === "Multiplier")?.value ?? 1;
-  const points = parseFloat(((happiness + power) * multiplier).toFixed(2));
+    const newMeta = {
+      ...oldMeta,
+      ...changes,
+      attributes: updatedAttrs,
+    };
 
-  const existingPoints = updatedAttrs.find(a => a.trait_type === "Points");
-  if (existingPoints) {
-    existingPoints.value = points;
-  } else {
-    updatedAttrs.push({ trait_type: "Points", value: points });
-  }
+    const metadataBlob = new Blob([JSON.stringify(newMeta)], {
+      type: "application/json",
+    });
+    const metadataFile = new File([metadataBlob], "metadata.json");
+    const formData = new FormData();
+    formData.append("file", metadataFile);
+    formData.append("rootTxId", txId);
 
-  const newMeta = {
-    ...oldMeta,
-    ...changes,
-    attributes: updatedAttrs,
+    const evolveRes = await fetch("/api/irys/evolve-file", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!evolveRes.ok) throw new Error("Evolve failed");
+    const evolveData = await evolveRes.json();
+
+    const updatedRes = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+    if (updatedRes.ok) {
+      const newMeta = await updatedRes.json();
+      setAttributes(newMeta.attributes || []);
+      setPetName(newMeta.name || "Unnamed Pet");
+    }
+
+    return evolveData;
   };
-
-  const metadataBlob = new Blob([JSON.stringify(newMeta)], {
-    type: "application/json",
-  });
-  const metadataFile = new File([metadataBlob], "metadata.json");
-  const formData = new FormData();
-  formData.append("file", metadataFile);
-  formData.append("rootTxId", txId);
-
-  const evolveRes = await fetch("/api/irys/evolve-file", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!evolveRes.ok) throw new Error("Evolve failed");
-  const evolveData = await evolveRes.json();
-
-  const updatedRes = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
-  if (updatedRes.ok) {
-    const newMeta = await updatedRes.json();
-    setAttributes(newMeta.attributes || []);
-    setPetName(newMeta.name || "Unnamed Pet");
-  }
-
-  return evolveData;
-};
   const feed = async () => {
     try {
       return [
         {
-          address: clickContractAddress,
-          abi: clickContractAbi,
+          address: contractAddress,
+          abi: abi,
           functionName: "feed",
-          args: [petId], 
+          args: [petId],
         },
       ];
     } catch (err) {
@@ -132,11 +138,11 @@ const updateMetadata = async (txId: string, changes: any) => {
   };
 
   const train = async () => {
-    try {    
+    try {
       return [
         {
-          address: clickContractAddress,
-          abi: clickContractAbi,
+          address: contractAddress,
+          abi: abi,
           functionName: "train",
           args: [petId], // NFTIrysUrl from your upload logic
         },
@@ -163,6 +169,7 @@ const updateMetadata = async (txId: string, changes: any) => {
       description: description,
       backstory: backstory,
       multiplier: multiplier,
+      NftLevel: NftLevel,
       "stats.happiness": happiness.toString(),
       "stats.memePower": power.toString(),
       "stats.level": level.toString(),
@@ -171,37 +178,43 @@ const updateMetadata = async (txId: string, changes: any) => {
     router.push(`/pet-details?${queryParams.toString()}`);
   };
 
-   const handleFeedStatus = useCallback(async (status: LifecycleStatus) => {
-    console.log("status", status.statusName)
-    if(status.statusName==='success'){
-       const txId = extractTxId(metadataUrl);
-    const updated = await updateMetadata(txId, {
-      attributes: [
-        { trait_type: "Happiness", value: 5 },
-        { trait_type: "Power", value: 1 },
-        { trait_type: "Multiplier", value: 0.1 },
-      ],
-    });
-
-    toast.success("Pet Fed!");
-    }
-  }, []);
-
-  const handleTrainStatus = useCallback(async (status: LifecycleStatus) => {
-    console.log("status", status.statusName)
-    if(status.statusName==='success'){
+  const handleFeedStatus = useCallback(
+    async (status: LifecycleStatus) => {
+      console.log("status", status.statusName);
+      if (status.statusName === "success") {
         const txId = extractTxId(metadataUrl);
-    const updated = await updateMetadata(txId, {
-      attributes: [
-        { trait_type: "Happiness", value: 1 },
-        { trait_type: "Power", value: 5 },
-        { trait_type: "Multiplier", value: 0.15 },
-      ],
-    });
+        const updated = await updateMetadata(txId, {
+          attributes: [
+            { trait_type: "Happiness", value: 5 },
+            { trait_type: "Power", value: 1 },
+            { trait_type: "Multiplier", value: 0.1 },
+          ],
+        });
 
-    toast.success("Pet Trained!");
-    }
-  }, []);
+        toast.success("Pet Fed!");
+      }
+    },
+    [metadataUrl]
+  );
+
+  const handleTrainStatus = useCallback(
+    async (status: LifecycleStatus) => {
+      console.log("status", status.statusName);
+      if (status.statusName === "success") {
+        const txId = extractTxId(metadataUrl);
+        const updated = await updateMetadata(txId, {
+          attributes: [
+            { trait_type: "Happiness", value: 1 },
+            { trait_type: "Power", value: 5 },
+            { trait_type: "Multiplier", value: 0.15 },
+          ],
+        });
+
+        toast.success("Pet Trained!");
+      }
+    },
+    [metadataUrl]
+  );
 
   return (
     <div
@@ -222,17 +235,24 @@ const updateMetadata = async (txId: string, changes: any) => {
         {hovered && (
           <div className="absolute inset-0 bg-black bg-opacity-30 flex justify-end items-start p-3 gap-2">
             <div className="flex flex-col gap-2 items-end ml-auto">
-              <Transaction chainId={84532} calls={feed} onStatus={handleFeedStatus}>
+              <Transaction
+                chainId={84532}
+                calls={feed}
+                onStatus={handleFeedStatus}
+              >
                 <TransactionButton
-                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
+                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-sm transform transition-transform hover:scale-125"
                   text="Feed"
                 />
-                 
               </Transaction>
-              <Transaction chainId={84532} calls={train} onStatus={handleTrainStatus}>
+              <Transaction
+                chainId={84532}
+                calls={train}
+                onStatus={handleTrainStatus}
+              >
                 <TransactionButton
-                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
-                  text="train"
+                  className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-sm transform transition-transform hover:scale-125"
+                  text="Train"
                 />
               </Transaction>
             </div>
@@ -245,7 +265,10 @@ const updateMetadata = async (txId: string, changes: any) => {
           {petName}
         </h2>
         <h2 className="text-base font-press-start text-gray-800 mb-1">
-          {multiplier}
+          Multiplier: {multiplier}
+        </h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          Level: {NftLevel}
         </h2>
         <div className="text-sm font-courier-prime text-gray-500 mb-1">
           Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
