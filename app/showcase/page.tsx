@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { BrowserProvider, Contract } from "ethers";
-import PetCard from "../components/AuctionCard"; 
-import abi from '../../utils/abi.json';
+import PetCard from "../components/AuctionCard";
+import abi from "../../utils/abi.json";
 
-const NFT_CONTRACT_ADDRESS="0xb861231baD0dEb2dfB436B6b722902e533b76933";
+const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
 export default function HomepagePreview() {
   const [nfts, setNfts] = useState([]);
@@ -24,6 +24,8 @@ export default function HomepagePreview() {
           const tokenId = await contract.tokenByIndex(i);
           const owner = await contract.ownerOf(tokenId);
           const tokenURI = await contract.tokenURI(tokenId);
+          const multiplier = await contract.userTokenMultiplier(owner, tokenId);
+          const formatedMultiplier = (parseFloat(multiplier) / 1e18).toFixed(2);
 
           // If IPFS, convert to gateway URL
           let metadataUrl = tokenURI;
@@ -49,6 +51,7 @@ export default function HomepagePreview() {
             owner,
             image,
             metadataUrl,
+            formatedMultiplier,
           });
         }
         setNfts(nftList);
@@ -69,7 +72,7 @@ export default function HomepagePreview() {
       />
       <div className="relative min-h-screen w-full flex items-center justify-center p-4">
         <div className="w-4/5 min-h-screen overflow-y-auto bg-white bg-opacity-90 rounded-lg shadow-lg p-8 flex items-center justify-center flex-col space-y-1">
-        {/* <Wallet/> */}
+          {/* <Wallet/> */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-700 mb-7 font-press-start-2p text-center">
               Minted NFTs
@@ -77,17 +80,18 @@ export default function HomepagePreview() {
             {loading ? (
               <div className="text-gray-500">Loading...</div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
                 {nfts.map((nft) => (
                   <PetCard
-                  key={nft.tokenId}
-                  petId={nft.tokenId}
-                  imageSrc={nft.image}
-                  owner={nft.owner}
-                  metadataUrl={nft.metadataUrl}
+                    key={nft.tokenId}
+                    petId={nft.tokenId}
+                    imageSrc={nft.image}
+                    owner={nft.owner}
+                    metadataUrl={nft.metadataUrl}
+                    multiplier={nft.formatedMultiplier}
                   />
                 ))}
-                </div>
+              </div>
             )}
           </div>
         </div>

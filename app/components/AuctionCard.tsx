@@ -4,15 +4,29 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Utensils, Bone, Search } from "lucide-react";
+import {
+  Transaction,
+  TransactionButton,
+  TransactionToast,
+} from "@coinbase/onchainkit/transaction";
+import { clickContractAbi } from "@/utils/contractAbi";
 
-export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
+export default function PetCard({
+  petId,
+  imageSrc,
+  owner,
+  metadataUrl,
+  multiplier,
+}: any) {
   const router = useRouter();
   const [attributes, setAttributes] = useState<any[]>([]);
   const [petName, setPetName] = useState("Unnamed Pet");
   const [hovered, setHovered] = useState(false);
   const [description, setDescription] = useState("");
+  const [backstory, setBackstory] = useState("");
 
   const extractTxId = (url: string) => url.split("/").pop()!;
+  const clickContractAddress = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -22,9 +36,10 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
         if (res.ok) {
           const data = await res.json();
           setAttributes(data.attributes || []);
-          console.log("data",data)
+          console.log("data", data);
           setPetName(data.name || "Unnamed Pet");
           setDescription(data.description || "");
+          setBackstory(data.backstory || "");
         }
       } catch (err) {
         console.error("Error loading metadata:", err);
@@ -47,7 +62,9 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
           const updated = changes.attributes.find(
             (a: any) => a.trait_type === attr.trait_type
           );
-          return updated ? { ...attr, value: attr.value + updated.value } : attr;
+          return updated
+            ? { ...attr, value: attr.value + updated.value }
+            : attr;
         }
         return attr;
       }),
@@ -80,32 +97,65 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
   };
 
   const feed = async () => {
-    const txId = extractTxId(metadataUrl);
-    await toast.promise(
-      updateMetadata(txId, { attributes: [{ trait_type: "Happiness", value: 5 }] }),
-      {
-        loading: "Feeding pet...",
-        success: "Pet fed successfully!",
-        error: "Failed to feed pet.",
-      }
-    );
+    try {
+      // const txId = extractTxId(metadataUrl);
+      // await toast.promise(
+      //   updateMetadata(txId, {
+      //     attributes: [{ trait_type: "Happiness", value: 5 }],
+      //   }),
+      //   {
+      //     loading: "Feeding pet...",
+      //     success: "Pet fed successfully!",
+      //     error: "Failed to feed pet.",
+      //   }
+      // );
+
+      return [
+        {
+          address: clickContractAddress,
+          abi: clickContractAbi,
+          functionName: "feed",
+          args: [petId], // NFTIrysUrl from your upload logic
+        },
+      ];
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const train = async () => {
-    const txId = extractTxId(metadataUrl);
-    await toast.promise(
-      updateMetadata(txId, { attributes: [{ trait_type: "Power", value: 5 }] }),
-      {
-        loading: "Training pet...",
-        success: "Pet trained successfully!",
-        error: "Failed to train pet.",
-      }
-    );
+    try {
+      // const txId = extractTxId(metadataUrl);
+      // await toast.promise(
+      //   updateMetadata(txId, {
+      //     attributes: [{ trait_type: "Power", value: 5 }],
+      //   }),
+      //   {
+      //     loading: "Training pet...",
+      //     success: "Pet trained successfully!",
+      //     error: "Failed to train pet.",
+      //   }
+      // );
+
+      return [
+        {
+          address: clickContractAddress,
+          abi: clickContractAbi,
+          functionName: "train",
+          args: [petId], // NFTIrysUrl from your upload logic
+        },
+      ];
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const happiness = attributes.find(attr => attr.trait_type === "Happiness")?.value ?? 0;
-  const power = attributes.find(attr => attr.trait_type === "Power")?.value ?? 0;
-  const level = attributes.find(attr => attr.trait_type === "Level")?.value ?? 1;
+  const happiness =
+    attributes.find((attr) => attr.trait_type === "Happiness")?.value ?? 0;
+  const power =
+    attributes.find((attr) => attr.trait_type === "Power")?.value ?? 0;
+  const level =
+    attributes.find((attr) => attr.trait_type === "Level")?.value ?? 1;
 
   const handleExplore = () => {
     const queryParams = new URLSearchParams({
@@ -115,6 +165,8 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
       metadataUrl,
       name: petName,
       description: description,
+      backstory: backstory,
+      multiplier: multiplier,
       "stats.happiness": happiness.toString(),
       "stats.memePower": power.toString(),
       "stats.level": level.toString(),
@@ -134,31 +186,50 @@ export default function PetCard({ petId, imageSrc, owner, metadataUrl }: any) {
           src={imageSrc}
           alt="NFT"
           className="w-full h-full object-cover rounded-xl transform transition duration-300 hover:scale-105 hover:brightness-105"
-          onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/150")}
+          onError={(e) =>
+            (e.currentTarget.src = "https://via.placeholder.com/150")
+          }
         />
 
         {hovered && (
           <div className="absolute inset-0 bg-black bg-opacity-30 flex justify-end items-start p-3 gap-2">
             <div className="flex flex-col gap-2 items-end ml-auto">
-              <button
+              {/* <button
                 onClick={feed}
                 className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
               >
                 <Utensils className="w-7 h-7" />
-              </button>
-              <button
+              </button> */}
+              <Transaction chainId={84532} calls={feed}>
+                <TransactionButton
+                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
+                  text="Feed"
+                />
+              </Transaction>
+              {/* <button
                 onClick={train}
                 className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
               >
                 <Bone className="w-7 h-7" />
-              </button>
+              </button> */}
+              <Transaction chainId={84532} calls={train}>
+                <TransactionButton
+                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
+                  text="train"
+                />
+              </Transaction>
             </div>
           </div>
         )}
       </div>
 
       <div className="p-4">
-        <h2 className="text-base font-press-start text-gray-800 mb-1">{petName}</h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          {petName}
+        </h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          {multiplier}
+        </h2>
         <div className="text-sm font-courier-prime text-gray-500 mb-1">
           Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
         </div>

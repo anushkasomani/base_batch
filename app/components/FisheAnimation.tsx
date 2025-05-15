@@ -1,34 +1,34 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import Navbar from '../navbar';
-import BlurText from './BlurText';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from "react";
+import Navbar from "../navbar";
+import BlurText from "./BlurText";
+import Image from "next/image";
 
 export default function SwimmingFishes() {
   const [isMounted, setIsMounted] = useState(false);
-  
+
   const handleAnimationComplete = () => {
-    console.log('Animation completed!');
+    console.log("Animation completed!");
   };
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  
+
   return (
     <div
       className="relative w-full h-screen overflow-hidden"
       style={{
         backgroundImage: `url('/back.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        imageRendering: 'pixelated',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        imageRendering: "pixelated",
       }}
     >
       <Navbar />
-      
+
       {/* Main Text */}
       <div className="font-pixelify absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[40%] text-center z-10 space-y-4">
         {isMounted && (
@@ -52,44 +52,56 @@ export default function SwimmingFishes() {
             </div>
             <div className="flex justify-center space-x-4 mt-8">
               <button
-                onClick={() => window.location.href = '/generate'}
+                onClick={() => (window.location.href = "/generate")}
                 className="px-12 py-3 text-white border-2 border-white font-pixelify rounded-md shadow-md hover:bg-green-700 transition"
               >
                 Mint Your Own Pet
               </button>
               <button
-                onClick={() => window.location.href = '/showcase'}
+                onClick={() => (window.location.href = "/showcase")}
                 className="px-12 py-3 text-white border-2 border-white font-pixelify rounded-md shadow-md hover:bg-green-700 transition"
               >
                 Showcase
+              </button>
+              <button
+                onClick={() => (window.location.href = "/leaderboard")}
+                className="px-12 py-3 text-white border-2 border-white font-pixelify rounded-md shadow-md hover:bg-green-700 transition"
+              >
+                🔥Leaderboard🔥
               </button>
             </div>
           </>
         )}
       </div>
-      
+
       {/* Cat - Bottom Left */}
-      <div className="absolute bottom-0 left-4 z-10" style={{ position: 'absolute' }}>
+      <div
+        className="absolute bottom-0 left-4 z-10"
+        style={{ position: "absolute" }}
+      >
         {isMounted && (
           <Image
             src="/cat.gif"
             alt="Cat"
             width={280}
             height={280}
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: "contain" }}
           />
         )}
       </div>
-      
+
       {/* Dog - Bottom Right */}
-      <div className="absolute bottom-0 right-4 z-10" style={{ position: 'absolute' }}>
+      <div
+        className="absolute bottom-0 right-4 z-10"
+        style={{ position: "absolute" }}
+      >
         {isMounted && (
           <Image
             src="/dog.gif"
             alt="Dog"
             width={280}
             height={280}
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: "contain" }}
           />
         )}
       </div>
