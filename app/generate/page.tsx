@@ -20,7 +20,11 @@ export default function GenerateImage() {
     setImage(imageData || null);
   };
 
-  const handlePromptSubmit = async (prompt: string, userBackstory: string, artStyle: string) => {
+  const handlePromptSubmit = async (
+    prompt: string,
+    userBackstory: string,
+    artStyle: string
+  ) => {
     try {
       setLoading(true);
       setError(null);
@@ -99,12 +103,12 @@ export default function GenerateImage() {
 
   return (
     <div className="relative min-h-screen w-full ">
-      <div 
+      <div
         className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat "
-        style={{ backgroundImage: 'url(/bg-gen.png)' }}
+        style={{ backgroundImage: "url(/bg-gen.png)" }}
       />
-      <img 
-        src="/totoro_bg.png" 
+      <img
+        src="/totoro_bg.png"
         alt="Totoro"
         className="absolute bottom-0 right-0 z-40 w-[250px] h-auto max-w-full md:max-w-[30%] sm:max-w-[40%]"
       />
