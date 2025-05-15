@@ -24,6 +24,8 @@ export default function TrendingPage() {
         for (let i = 0; i < Number(totalSupply); i++) {
           const tokenId = await contract.tokenByIndex(i);
           const tokenURI = await contract.tokenURI(tokenId);
+          const multiplier = await contract.tokenIdToMultiplier(tokenId);
+          const formatedMultiplier = (parseFloat(multiplier) / 1e18).toFixed(2);
 
           let metadataUrl = tokenURI;
           if (tokenURI.startsWith("ipfs://")) {
@@ -44,6 +46,12 @@ export default function TrendingPage() {
               (attr) => attr.trait_type === "Power"
             );
             const power = powerAttribute ? powerAttribute.value : 0;
+            const HappinessAttribute = metadata.attributes?.find(
+              (attr) => attr.trait_type === "Happiness"
+            );
+            const happiness = HappinessAttribute ? HappinessAttribute.value : 0;
+
+            const points = (happiness + power) * formatedMultiplier;
 
             nftData.push({
               tokenId: tokenId.toString(),
@@ -51,6 +59,8 @@ export default function TrendingPage() {
               creator,
               image,
               power,
+              happiness,
+              points,
             });
           } catch (err) {
             console.error("Failed to fetch metadata for token", tokenId, err);
@@ -58,7 +68,7 @@ export default function TrendingPage() {
         }
 
         // Sort NFTs by descending power
-        nftData.sort((a, b) => b.power - a.power);
+        nftData.sort((a, b) => b.points - a.points);
 
         setNfts(nftData);
       } catch (error) {
@@ -114,7 +124,7 @@ export default function TrendingPage() {
                       <td className="p-3">{nft.name}</td>
                       <td className="p-3 break-words">{nft.creator}</td>
                       <td className="p-3 font-semibold text-red-600">
-                        {nft.power}
+                        {nft.points}
                       </td>
                     </tr>
                   ))}

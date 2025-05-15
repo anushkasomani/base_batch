@@ -111,7 +111,6 @@ export default function PetCard({
     });
 
     if (!evolveRes.ok) throw new Error("Evolve failed");
-    const evolveData = await evolveRes.json();
 
     const updatedRes = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
     if (updatedRes.ok) {
@@ -120,7 +119,7 @@ export default function PetCard({
       setPetName(newMeta.name || "Unnamed Pet");
     }
 
-    return evolveData;
+    return await evolveRes.json();
   };
   const feed = async () => {
     try {
@@ -180,18 +179,22 @@ export default function PetCard({
 
   const handleFeedStatus = useCallback(
     async (status: LifecycleStatus) => {
-      console.log("status", status.statusName);
       if (status.statusName === "success") {
-        const txId = extractTxId(metadataUrl);
-        const updated = await updateMetadata(txId, {
-          attributes: [
-            { trait_type: "Happiness", value: 5 },
-            { trait_type: "Power", value: 1 },
-            { trait_type: "Multiplier", value: 0.1 },
-          ],
-        });
-
-        toast.success("Pet Fed!");
+        const toastId = "feed-status";
+        toast.loading("Feeding pet...", { id: toastId });
+        try {
+          const txId = extractTxId(metadataUrl);
+          await updateMetadata(txId, {
+            attributes: [
+              { trait_type: "Happiness", value: 5 },
+              { trait_type: "Power", value: 1 },
+              { trait_type: "Multiplier", value: 0.1 },
+            ],
+          });
+          toast.success("Pet Fed!", { id: toastId });
+        } catch {
+          toast.error("Failed to feed pet.", { id: toastId });
+        }
       }
     },
     [metadataUrl]
@@ -199,18 +202,22 @@ export default function PetCard({
 
   const handleTrainStatus = useCallback(
     async (status: LifecycleStatus) => {
-      console.log("status", status.statusName);
       if (status.statusName === "success") {
-        const txId = extractTxId(metadataUrl);
-        const updated = await updateMetadata(txId, {
-          attributes: [
-            { trait_type: "Happiness", value: 1 },
-            { trait_type: "Power", value: 5 },
-            { trait_type: "Multiplier", value: 0.15 },
-          ],
-        });
-
-        toast.success("Pet Trained!");
+        const toastId = "train-status";
+        toast.loading("Training pet...", { id: toastId });
+        try {
+          const txId = extractTxId(metadataUrl);
+          await updateMetadata(txId, {
+            attributes: [
+              { trait_type: "Happiness", value: 1 },
+              { trait_type: "Power", value: 5 },
+              { trait_type: "Multiplier", value: 0.15 },
+            ],
+          });
+          toast.success("Pet Trained!", { id: toastId });
+        } catch {
+          toast.error("Failed to train pet.", { id: toastId });
+        }
       }
     },
     [metadataUrl]
