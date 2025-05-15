@@ -31,7 +31,7 @@ export function ImageResultDisplay({
   const [showHistory, setShowHistory] = useState(false);
 
   const clickContractAddress = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
-
+ 
   const handleDownload = () => {
     // Create a temporary link element
     const link = document.createElement("a");
@@ -46,89 +46,177 @@ export function ImageResultDisplay({
     setShowHistory(!showHistory);
   };
 
-  const handleMintNFT = async () => {
-    console.log(imageUrl);
-    if (!imageUrl.startsWith("data:image")) {
-      console.error("Invalid image data URL");
-      return;
-    }
+ 
+  //   console.log(imageUrl);
+  //   if (!imageUrl.startsWith("data:image")) {
+  //     console.error("Invalid image data URL");
+  //     return;
+  //   }
 
-    // Extract base64 data from the imageUrl
-    const base64Data = imageUrl.split(",")[1];
-    const binary = atob(base64Data);
-    const array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-    const file = new File([array], "pet-image.png", { type: "image/png" });
+  //   // Extract base64 data from the imageUrl
+  //   const base64Data = imageUrl.split(",")[1];
+  //   const binary = atob(base64Data);
+  //   const array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  //   const file = new File([array], "pet-image.png", { type: "image/png" });
 
-    // Step 1: Upload image to Irys
-    const formData1 = new FormData();
-    formData1.append("file", file);
-    formData1.append(
-      "tags",
-      JSON.stringify([{ name: "application-id", value: "MyNFTDrop" }])
-    );
+  //   // Step 1: Upload image to Irys
+  //   const formData1 = new FormData();
+  //   formData1.append("file", file);
+  //   formData1.append(
+  //     "tags",
+  //     JSON.stringify([{ name: "application-id", value: "MyNFTDrop" }])
+  //   );
 
-    const imgRes = await fetch("/api/irys/upload-file", {
-      method: "POST",
-      body: formData1,
-    });
+  //   const imgRes = await fetch("/api/irys/upload-file", {
+  //     method: "POST",
+  //     body: formData1,
+  //   });
 
-    if (!imgRes.ok) {
-      const err = await imgRes.json();
-      throw new Error("Image upload failed: " + err.error);
-    }
+  //   if (!imgRes.ok) {
+  //     const err = await imgRes.json();
+  //     throw new Error("Image upload failed: " + err.error);
+  //   }
 
-    const imgResData = await imgRes.json();
-    const imgTxId = imgResData.id;
-    const imageIrysUrl = `https://gateway.irys.xyz/mutable/${imgTxId}`;
+  //   const imgResData = await imgRes.json();
+  //   const imgTxId = imgResData.id;
+  //   const imageIrysUrl = `https://gateway.irys.xyz/mutable/${imgTxId}`;
 
-    // Step 2: Upload metadata file (as the evolving data)
-    const metadata = {
-      name: petName,
-      backstory,
-      image: imageIrysUrl,
-      creator: address,
-    };
+  //   // Step 2: Upload metadata file (as the evolving data)
+  //   const metadata = {
+  //     name: petName,
+  //     backstory,
+  //     image: imageIrysUrl,
+  //     creator: address,
+  //   };
 
-    const metadataBlob = new Blob([JSON.stringify(metadata)], {
-      type: "application/json",
-    });
-    const metadataFile = new File([metadataBlob], "metadata.json");
+  //   const metadataBlob = new Blob([JSON.stringify(metadata)], {
+  //     type: "application/json",
+  //   });
+  //   const metadataFile = new File([metadataBlob], "metadata.json");
 
-    const formData2 = new FormData();
-    formData2.append("file", metadataFile);
-    formData2.append(
-      "tags",
-      JSON.stringify([{ name: "Root-TX", value: imgTxId }])
-    );
+  //   const formData2 = new FormData();
+  //   formData2.append("file", metadataFile);
+  //   formData2.append(
+  //     "tags",
+  //     JSON.stringify([{ name: "Root-TX", value: imgTxId }])
+  //   );
 
-    const metaRes = await fetch("/api/irys/upload-file", {
-      method: "POST",
-      body: formData2,
-    });
+  //   const metaRes = await fetch("/api/irys/upload-file", {
+  //     method: "POST",
+  //     body: formData2,
+  //   });
 
-    if (!metaRes.ok) {
-      const err = await metaRes.json();
-      throw new Error("Metadata upload failed: " + err.error);
-    }
+  //   if (!metaRes.ok) {
+  //     const err = await metaRes.json();
+  //     throw new Error("Metadata upload failed: " + err.error);
+  //   }
 
-    const metaResData = await metaRes.json();
+  //   const metaResData = await metaRes.json();
 
-    const NFTTxId = metaResData.id;
-    const NFTIrysUrl = `https://gateway.irys.xyz/mutable/${NFTTxId}`;
+  //   const NFTTxId = metaResData.id;
+  //   const NFTIrysUrl = `https://gateway.irys.xyz/mutable/${NFTTxId}`;
 
-    console.log("Success!");
-    console.log("image TX:", imageIrysUrl);
-    console.log("NFT metadata TX:", NFTIrysUrl);
+  //   console.log("Success!");
+  //   console.log("image TX:", imageIrysUrl);
+  //   console.log("NFT metadata TX:", NFTIrysUrl);
 
-    return [
-      {
-        address: clickContractAddress,
-        abi: clickContractAbi,
-        functionName: "safeMint",
-        args: [NFTIrysUrl], // NFTIrysUrl from your upload logic
-      },
-    ];
+  //   return [
+  //     {
+  //       address: clickContractAddress,
+  //       abi: clickContractAbi,
+  //       functionName: "safeMint",
+  //       args: [NFTIrysUrl], // NFTIrysUrl from your upload logic
+  //     },
+  //   ];
+  // };
+const handleMintNFT = async () => {
+  if (!imageUrl.startsWith("data:image")) {
+    console.error("Invalid image data URL");
+    return;
+  }
+
+  // Convert base64 image to File
+  const base64Data = imageUrl.split(",")[1];
+  const binary = atob(base64Data);
+  const array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  const file = new File([array], "pet-image.png", { type: "image/png" });
+
+  // Step 1: Upload image to Irys
+  const formData1 = new FormData();
+  formData1.append("file", file);
+  formData1.append(
+    "tags",
+    JSON.stringify([{ name: "application-id", value: "MyNFTDrop" }])
+  );
+
+  const imgRes = await fetch("/api/irys/upload-file", {
+    method: "POST",
+    body: formData1,
+  });
+
+  if (!imgRes.ok) {
+    const err = await imgRes.json();
+    throw new Error("Image upload failed: " + err.error);
+  }
+
+  const imgResData = await imgRes.json();
+  const imgTxId = imgResData.id;
+  const imageIrysUrl = `https://gateway.irys.xyz/mutable/${imgTxId}`;
+
+  // Step 2: Create NFT metadata
+  const metadata = {
+    name: petName ?? "Unnamed Pet",
+    description: backstory ?? "An enigmatic creature.",
+    image: imageIrysUrl,
+    creator: address,
+    attributes: [
+      { trait_type: "Level", value: 1 },
+      { trait_type: "Happiness", value: 5 },
+      { trait_type: "Power", value: 5 },
+      { trait_type: "Multiplier", value: 1 },
+      { trait_type: "Points", value: 0 },
+
+    ],
   };
+
+  const metadataBlob = new Blob([JSON.stringify(metadata)], {
+    type: "application/json",
+  });
+  const metadataFile = new File([metadataBlob], "metadata.json");
+
+  // Step 3: Upload metadata to Irys
+  const formData2 = new FormData();
+  formData2.append("file", metadataFile);
+  formData2.append("tags", JSON.stringify([{ name: "Root-TX", value: imgTxId }]));
+
+  const metaRes = await fetch("/api/irys/upload-file", {
+    method: "POST",
+    body: formData2,
+  });
+
+  if (!metaRes.ok) {
+    const err = await metaRes.json();
+    throw new Error("Metadata upload failed: " + err.error);
+  }
+
+  const metaResData = await metaRes.json();
+  const NFTTxId = metaResData.id;
+  const NFTIrysUrl = `https://gateway.irys.xyz/mutable/${NFTTxId}`;
+
+  console.log("Success!");
+  console.log("Image TX:", imageIrysUrl);
+  console.log("NFT metadata TX:", NFTIrysUrl);
+
+  // Return transaction call
+  return [
+    {
+      address: clickContractAddress,
+      abi: clickContractAbi,
+      functionName: "safeMint",
+      args: [NFTIrysUrl],
+    },
+  ];
+};
 
   return (
     <div className="p-6">
@@ -187,7 +275,10 @@ export function ImageResultDisplay({
             >
               Create
             </Button> */}
-            <Transaction chainId={84532} calls={handleMintNFT}>
+            <Transaction
+              chainId={84532}
+              calls={handleMintNFT}
+            >
               <TransactionButton
                 className=" text-white rounded-lg px-6 py-3 font-bold"
                 text="Mint NFT"
