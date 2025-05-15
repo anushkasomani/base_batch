@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const rpcURL = 'https://base-sepolia-rpc.publicnode.com';
     const irysUploader = await Uploader(BaseEth).withWallet(process.env.PRIVATE_KEY!).withRpc(rpcURL).devnet();
-    const fundTx = await irysUploader.fund(irysUploader.utils.toAtomic(0.0008));
+    const fundTx = await irysUploader.fund(irysUploader.utils.toAtomic(0.005));
     return NextResponse.json({
       message: `Successfully funded ${irysUploader.utils.fromAtomic(fundTx.quantity)} ${irysUploader.token}`,
     });

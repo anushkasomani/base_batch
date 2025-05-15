@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { BrowserProvider, Contract } from "ethers";
+import { BrowserProvider, Contract, JsonRpcProvider } from "ethers";
 import PetCard from "../components/AuctionCard";
 import abi from "../../utils/abi.json";
+import { ethers } from "ethers";
 
 const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
@@ -14,7 +15,7 @@ export default function HomepagePreview() {
     const fetchNFTs = async () => {
       try {
         setLoading(true);
-        const provider = new BrowserProvider(window.ethereum);
+        const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL);
         const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
 
         const totalSupply = await contract.totalSupply();

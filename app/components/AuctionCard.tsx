@@ -8,6 +8,9 @@ import {
   Transaction,
   TransactionButton,
   TransactionToast,
+  TransactionToastIcon,
+  TransactionToastAction,
+  TransactionToastLabel
 } from "@coinbase/onchainkit/transaction";
 import { clickContractAbi } from "@/utils/contractAbi";
 import { useCallback } from "react";
@@ -169,6 +172,7 @@ const updateMetadata = async (txId: string, changes: any) => {
   };
 
    const handleFeedStatus = useCallback(async (status: LifecycleStatus) => {
+    console.log("status", status.statusName)
     if(status.statusName==='success'){
        const txId = extractTxId(metadataUrl);
     const updated = await updateMetadata(txId, {
@@ -223,6 +227,7 @@ const updateMetadata = async (txId: string, changes: any) => {
                   className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
                   text="Feed"
                 />
+                 
               </Transaction>
               <Transaction chainId={84532} calls={train} onStatus={handleTrainStatus}>
                 <TransactionButton
