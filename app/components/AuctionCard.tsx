@@ -7,8 +7,14 @@ import { Search } from "lucide-react";
 import {
   Transaction,
   TransactionButton,
+  TransactionToast,
+  TransactionToastIcon,
+  TransactionToastAction,
+  TransactionToastLabel,
 } from "@coinbase/onchainkit/transaction";
-import { clickContractAbi } from "@/utils/contractAbi";
+import { contractAddress } from "../../utils/contractAddress";
+import abi from "../../utils/abi.json";
+import { useCallback } from "react";
 import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
 
 export default function PetCard({
@@ -17,6 +23,7 @@ export default function PetCard({
   owner,
   metadataUrl,
   multiplier,
+  NftLevel,
 }: any) {
   const router = useRouter();
   const [attributes, setAttributes] = useState<any[]>([]);
@@ -26,8 +33,6 @@ export default function PetCard({
 
   const [hasFed, setHasFed] = useState(false);
   const [hasTrained, setHasTrained] = useState(false);
-
-  const clickContractAddress = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
 
   const extractTxId = (url: string) => url.split("/").pop()!;
 
@@ -71,6 +76,7 @@ export default function PetCard({
       return attr;
     });
 
+    // Update Points
     const happiness =
       updatedAttrs.find((a) => a.trait_type === "Happiness")?.value ?? 0;
     const power =
@@ -118,24 +124,35 @@ export default function PetCard({
 
     return await evolveRes.json();
   };
+  const feed = async () => {
+    try {
+      return [
+        {
+          address: contractAddress,
+          abi: abi,
+          functionName: "feed",
+          args: [petId],
+        },
+      ];
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const feed = async () => [
-    {
-      address: clickContractAddress,
-      abi: clickContractAbi,
-      functionName: "feed",
-      args: [petId],
-    },
-  ];
-
-  const train = async () => [
-    {
-      address: clickContractAddress,
-      abi: clickContractAbi,
-      functionName: "train",
-      args: [petId],
-    },
-  ];
+  const train = async () => {
+    try {
+      return [
+        {
+          address: contractAddress,
+          abi: abi,
+          functionName: "train",
+          args: [petId], // NFTIrysUrl from your upload logic
+        },
+      ];
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const happiness =
     attributes.find((attr) => attr.trait_type === "Happiness")?.value ?? 0;
@@ -154,6 +171,7 @@ export default function PetCard({
       description: description,
       backstory: backstory,
       multiplier: multiplier,
+      NftLevel: NftLevel,
       "stats.happiness": happiness.toString(),
       "stats.memePower": power.toString(),
       "stats.level": level.toString(),
@@ -234,8 +252,15 @@ export default function PetCard({
       </div>
 
       <div className="p-4">
-        <h2 className="text-base font-press-start text-gray-800 mb-1">{petName}</h2>
-        <h2 className="text-base font-press-start text-gray-800 mb-1">{multiplier}</h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          {petName}
+        </h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          Multiplier: {multiplier}
+        </h2>
+        <h2 className="text-base font-press-start text-gray-800 mb-1">
+          Level: {NftLevel}
+        </h2>
         <div className="text-sm font-courier-prime text-gray-500 mb-1">
           Owner: {owner.slice(0, 6)}...{owner.slice(-4)}
         </div>

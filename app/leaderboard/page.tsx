@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { JsonRpcProvider, Contract } from "ethers";
 import abi from "../../utils/abi.json";
 
-const NFT_CONTRACT_ADDRESS = "0x1709ea3f41ae3dfacf36f950c970aa346c7e35b1";
+import { contractAddress } from "../../utils/contractAddress";
 
 export default function TrendingPage() {
   const [nfts, setNfts] = useState([]);
@@ -13,8 +13,10 @@ export default function TrendingPage() {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-       const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL);
-const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+        const provider = new JsonRpcProvider(
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL
+        );
+        const contract = new Contract(contractAddress, abi, provider);
         const totalSupply = await contract.totalSupply();
 
         const nftData = [];
@@ -22,6 +24,8 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
         for (let i = 0; i < Number(totalSupply); i++) {
           const tokenId = await contract.tokenByIndex(i);
           const tokenURI = await contract.tokenURI(tokenId);
+          const multiplier = await contract.tokenIdToMultiplier(tokenId);
+          const formatedMultiplier = (parseFloat(multiplier) / 1e18).toFixed(2);
 
           let metadataUrl = tokenURI;
           if (tokenURI.startsWith("ipfs://")) {
@@ -42,6 +46,12 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
               (attr) => attr.trait_type === "Power"
             );
             const power = powerAttribute ? powerAttribute.value : 0;
+            const HappinessAttribute = metadata.attributes?.find(
+              (attr) => attr.trait_type === "Happiness"
+            );
+            const happiness = HappinessAttribute ? HappinessAttribute.value : 0;
+
+            const points = (happiness + power) * formatedMultiplier;
 
             nftData.push({
               tokenId: tokenId.toString(),
@@ -49,6 +59,8 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
               creator,
               image,
               power,
+              happiness,
+              points,
             });
           } catch (err) {
             console.error("Failed to fetch metadata for token", tokenId, err);
@@ -56,7 +68,7 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
         }
 
         // Sort NFTs by descending power
-        nftData.sort((a, b) => b.power - a.power);
+        nftData.sort((a, b) => b.points - a.points);
 
         setNfts(nftData);
       } catch (error) {
@@ -112,7 +124,7 @@ const contract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
                       <td className="p-3">{nft.name}</td>
                       <td className="p-3 break-words">{nft.creator}</td>
                       <td className="p-3 font-semibold text-red-600">
-                        {nft.power}
+                        {nft.points}
                       </td>
                     </tr>
                   ))}
