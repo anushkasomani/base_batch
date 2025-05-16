@@ -75,7 +75,9 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 <img width="947" alt="3" src="https://github.com/user-attachments/assets/f9a28505-4d95-4eef-87a3-1da390c84fa7" />
 
 ### Pet Details
-<img width="358" alt="4" src="https://github.com/user-attachments/assets/77603b37-432d-40f4-9c9b-63b7923e1ef1" />
+<img width="358" alt="4" src="https://github.com/user-attachments/assets/76c564b4-c0a1-49a6-a442-079218c4f5af" />
+
+
 
 ### Leaderboard
 <img width="944" alt="5" src="https://github.com/user-attachments/assets/b6b75a58-545a-4fd4-b533-75bdae1290da" />
