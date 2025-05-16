@@ -97,6 +97,39 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 
 
+## Getting Started
+
+First, install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+Next, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+
+
+## Learn More
+
+To learn more about OnchainKit, see our [documentation](https://onchainkit.xyz/getting-started).
+
+To learn more about Next.js, see the [Next.js documentation](https://nextjs.org/docs).
 
 
 
