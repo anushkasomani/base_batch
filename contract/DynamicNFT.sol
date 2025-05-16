@@ -22,6 +22,15 @@ contract DynamicNFT is
     // tokenId => owner (for easy querying)
     mapping(uint256 => address) public tokenIdToMinter;
 
+    //tokenId => multiplier
+    mapping(uint256 => uint256) public tokenIdToMultiplier;
+
+    //tokenId => level
+    mapping(uint256 => uint256) public tokenIdToLevel;
+
+    // user => tokenId => multiplier (fixed-point, scaled by 1e18)
+    mapping(address => mapping(uint256 => uint256)) public userTokenMultiplier;
+
     event Minted(address indexed user, uint256 indexed tokenId, string uid);
 
     constructor(address initialOwner)
@@ -40,15 +49,15 @@ contract DynamicNFT is
     /**
      * @notice Anyone can mint. The minter address is mapped to the tokenId and their UID.
      */
-    function safeMint(string memory uri)
-        public
-        returns (uint256)
-    {
+    function safeMint(string memory uri) public returns (uint256) {
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, uri);
         userTokenURI[msg.sender][tokenId] = uri;
         tokenIdToMinter[tokenId] = msg.sender;
+        userTokenMultiplier[msg.sender][tokenId] = 1e18;
+        tokenIdToMultiplier[tokenId] = 1e18;
+        tokenIdToLevel[tokenId] = 1e18;
         emit Minted(msg.sender, tokenId, uri);
         return tokenId;
     }
@@ -56,13 +65,8 @@ contract DynamicNFT is
     /**
      * @notice Only the NFT owner or the mapped user can update the URI.
      */
-    function updateTokenURI(uint256 tokenId, string memory newTokenURI)
-        public
-    {
-        require(
-            tokenIdToMinter[tokenId] == msg.sender,
-            "Not authorized"
-        );
+    function updateTokenURI(uint256 tokenId, string memory newTokenURI) public {
+        require(tokenIdToMinter[tokenId] == msg.sender, "Not authorized");
         _setTokenURI(tokenId, newTokenURI);
     }
 
@@ -73,7 +77,11 @@ contract DynamicNFT is
     /**
      * @notice Get the UID for a given user and tokenId.
      */
-    function getUserURI(address user, uint256 tokenId) public view returns (string memory) {
+    function getUserURI(address user, uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
         return userTokenURI[user][tokenId];
     }
 
@@ -82,6 +90,26 @@ contract DynamicNFT is
      */
     function getMinter(uint256 tokenId) public view returns (address) {
         return tokenIdToMinter[tokenId];
+    }
+
+    /**
+     * @notice Feed function increases multiplier by 0.1 (i.e., 1e17).
+     */
+    function feed(uint256 tokenId) public {
+        tokenIdToMultiplier[tokenId] += 1e17; // +0.1
+    }
+
+    /**
+     * @notice Train function increases multiplier by 0.15 (i.e., 1.5e17).
+     */
+    function train(uint256 tokenId) public {
+        tokenIdToMultiplier[tokenId] += 15e16; // +0.15
+    }
+
+    function levelUp(uint256 tokenId) public {
+        require(tokenIdToMinter[tokenId] == msg.sender, "Not authorized");
+        tokenIdToLevel[tokenId] += 1e18;
+        tokenIdToMultiplier[tokenId] += 50e16;
     }
 
     // The following functions are overrides required by Solidity.
