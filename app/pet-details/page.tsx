@@ -6,13 +6,27 @@ import Link from "next/link";
 import {
   Transaction,
   TransactionButton,
-  TransactionToast,
 } from "@coinbase/onchainkit/transaction";
 import { contractAddress } from "../../utils/contractAddress";
 import abi from "../../utils/abi.json";
+import { useAccount } from "wagmi";
+import { useState, useCallback, useRef } from "react";
+import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
+import { toast } from "react-hot-toast";
 
 export default function PetDetails() {
-  const searchParams = useSearchParams();
+  const { address: currentUserAddress } = useAccount();
+   const searchParams = useSearchParams();
+  const [hasEvolved, setHasEvolved] = useState(false);
+  const [attributes, setAttributes] = useState<any[]>([]);
+  const [petName, setPetName] = useState(searchParams.get("name") || "Unnamed Pet");
+  const [currentBackstory, setCurrentBackstory] = useState(searchParams.get("backstory") || searchParams.get("description") || "");
+
+  const [userPrompt, setUserPrompt] = useState("");
+  const [newBackstory, setNewBackstory] = useState("");
+  const [isLoadingBackstory, setIsLoadingBackstory] = useState(false);
+  const [showBackstoryUpdate, setShowBackstoryUpdate] = useState(false);
+  const backstoryInputRef = useRef<HTMLTextAreaElement>(null);
   const petId = searchParams.get("petId");
   const name = searchParams.get("name");
   const imageSrc = searchParams.get("imageSrc");
@@ -27,23 +41,187 @@ export default function PetDetails() {
   const NftLevel = searchParams.get("NftLevel");
   const points = Number(multiplier) * (Number(happiness) + Number(memePower));
 
+
+
+  const isCreator = currentUserAddress?.toLowerCase() === owner?.toLowerCase();
+
+  const extractTxId = (url: string) => url.split("/").pop()!;
+
   const handleLevelUp = async () => {
-    try {
-      return [
-        {
-          address: contractAddress,
-          abi: abi,
-          functionName: "levelUp",
-          args: [petId], // NFTIrysUrl from your upload logic
-        },
-      ];
-    } catch (err) {
-      console.log(err);
-    }
+    return [
+      {
+        address: contractAddress,
+        abi,
+        functionName: "levelUp",
+        args: [petId],
+      },
+    ];
   };
 
+  // const updateMetadata = async (txId: string, changes: any) => {
+  //   const res = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+  //   if (!res.ok) throw new Error("Failed to fetch metadata");
+  //   const oldMeta = await res.json();
+
+  //   const updatedAttrs = oldMeta.attributes.map((attr: any) => {
+  //     const updated = changes.attributes?.find((a: any) => a.trait_type === attr.trait_type);
+  //     return updated ? { ...attr, value: parseFloat((parseFloat(attr.value) + updated.value).toFixed(2)) } : attr;
+  //   });
+
+  //   const newMeta = {
+  //     ...oldMeta,
+  //     description: changes.description,
+  //     attributes: updatedAttrs,
+  //   };
+
+  //   const metadataBlob = new Blob([JSON.stringify(newMeta)], { type: "application/json" });
+  //   const metadataFile = new File([metadataBlob], "metadata.json");
+  //   const formData = new FormData();
+  //   formData.append("file", metadataFile);
+  //   formData.append("rootTxId", txId);
+
+  //   const evolveRes = await fetch("/api/irys/evolve-file", {
+  //     method: "POST",
+  //     body: formData,
+  //   });
+
+  //   if (!evolveRes.ok) throw new Error("Evolve failed");
+
+  //   const updatedRes = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+  //   if (updatedRes.ok) {
+  //     const newMeta = await updatedRes.json();
+  //     setAttributes(newMeta.attributes || []);
+  //     setPetName(newMeta.name || "Unnamed Pet");
+  //     setCurrentBackstory(newMeta.description);
+  //   }
+  // };
+const updateMetadata = async (txId: string, changes: any) => {
+  const res = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+  if (!res.ok) throw new Error("Failed to fetch metadata");
+
+  const oldMeta = await res.json();
+
+  // Add/increment attributes
+  let updatedAttrs = oldMeta.attributes.map((attr: any) => {
+    const updated = changes.attributes?.find(
+      (a: any) => a.trait_type === attr.trait_type
+    );
+    if (updated) {
+      return {
+        ...attr,
+        value: parseFloat(
+          (parseFloat(attr.value) + updated.value).toFixed(2)
+        ),
+      };
+    }
+    return attr;
+  });
+
+  // Add new attributes if not present
+  const existingTraits = updatedAttrs.map((a) => a.trait_type);
+  const missingAttrs = changes.attributes?.filter(
+    (a: any) => !existingTraits.includes(a.trait_type)
+  );
+  if (missingAttrs) {
+    updatedAttrs = [...updatedAttrs, ...missingAttrs];
+  }
+
+  const newMeta = {
+    ...oldMeta,
+    ...changes,
+    attributes: updatedAttrs,
+  };
+
+  const metadataBlob = new Blob([JSON.stringify(newMeta)], {
+    type: "application/json",
+  });
+  const metadataFile = new File([metadataBlob], "metadata.json");
+  const formData = new FormData();
+  formData.append("file", metadataFile);
+  formData.append("rootTxId", txId);
+
+  const evolveRes = await fetch("/api/irys/evolve-file", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!evolveRes.ok) throw new Error("Evolve failed");
+
+  const updatedRes = await fetch(`https://gateway.irys.xyz/mutable/${txId}`);
+  if (updatedRes.ok) {
+    const newMeta = await updatedRes.json();
+    setAttributes(newMeta.attributes || []);
+    setPetName(newMeta.name || "Unnamed Pet");
+    if (newMeta.description) {
+      setCurrentBackstory(newMeta.description);
+    }
+  }
+
+  return await evolveRes.json();
+};
+
+ const handleEvolveStatus = useCallback(
+  (status: LifecycleStatus) => {
+    (async () => {
+      if (status.statusName === "success" && !hasEvolved) {
+        setHasEvolved(true);
+        const toastId = "evolve-status";
+        toast.loading("Finalizing evolution...", { id: toastId });
+
+        try {
+          const wantsToUpdateBackstory = window.confirm("Do you want to update the backstory?");
+          const txId = extractTxId(metadataUrl!);
+
+          let finalBackstory = currentBackstory;
+
+          if (wantsToUpdateBackstory) {
+            const prompt = window.prompt(
+              "How should the backstory evolve?",
+              "E.g., Bloop found a mysterious portal to Meme Mountain..."
+            );
+
+            if (prompt) {
+              const response = await fetch("/api/generate-backstory", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  originalBackstory: currentBackstory,
+                  prompt: prompt,
+                }),
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                finalBackstory = data.modifiedBackstory;
+              } else {
+                throw new Error("Backstory generation failed");
+              }
+            }
+          }
+
+          // Update metadata with new level and final backstory
+          await updateMetadata(txId, {
+            description: finalBackstory,
+            attributes: [{ trait_type: "Level", value: 1 }], // increment by 1
+          });
+
+          setCurrentBackstory(finalBackstory);
+          toast.success("Pet evolved successfully!", { id: toastId });
+        } catch (err) {
+          console.error("Evolution error:", err);
+          toast.error("Failed to evolve pet", { id: "evolve-status" });
+          setHasEvolved(false);
+        }
+      }
+    })();
+  },
+  [hasEvolved, metadataUrl, currentBackstory]
+);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
+   <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 py-12 px-4">
       <div className="max-w-4xl mx-auto bg-white/90 shadow-2xl rounded-2xl p-8">
         <h1 className="text-2xl font-press-start-2p mb-8 text-gray-700 text-center tracking-tight">
           {name}
@@ -139,12 +317,19 @@ export default function PetDetails() {
               </Link>
             </div>
 
-            <Transaction chainId={84532} calls={handleLevelUp}>
-              <TransactionButton
-                className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-full transform transition-transform hover:scale-125"
-                text="Evolve"
-              />
-            </Transaction>
+            <div className="mt-6">
+        <Transaction chainId={84532} calls={handleLevelUp} onStatus={handleEvolveStatus}>
+          <TransactionButton
+            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            text="Evolve"
+            disabled={!isCreator || points < (Number(level) || 1) * 20}
+          />
+        </Transaction>
+        {!isCreator && <p className="text-sm text-red-500 mt-2">Only the creator can evolve this pet.</p>}
+        {isCreator && points < (Number(level) || 1) * 20 && (
+          <p className="text-sm text-yellow-600 mt-2">In sufficient points to evolve </p>
+        )}
+      </div>
           </div>
         </div>
       </div>
