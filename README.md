@@ -68,7 +68,8 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 <img width="959" alt="1" src="https://github.com/user-attachments/assets/0f899c26-935f-43d9-9203-4e9d6ea2689e" />
 
 ### Minting NFT
-<img width="945" alt="2" src="https://github.com/user-attachments/assets/ecbe7b7a-37ad-402f-89f1-84fe2476f2db" />
+![WhatsApp Image 2025-05-17 at 03 25 44_09bf2969](https://github.com/user-attachments/assets/93d0be41-df66-4c6c-8803-19b36bfb3828)
+
 
 ### Showcase 
 <img width="947" alt="3" src="https://github.com/user-attachments/assets/f9a28505-4d95-4eef-87a3-1da390c84fa7" />
