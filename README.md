@@ -19,7 +19,8 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 - **⛓ On-Chain Pet Minting**  
   Mint your AI-generated pet as a soulbound NFT directly on the Base chain.  
-  **Smart Contract Address:** `0x1234`
+  **Smart Contract Address:** `0xedea62d0b0561c81b60b1eb5b13aa568174a242d`
+  **Base Scan:** [Link](https://basescan.org/token/0xedea62d0b0561c81b60b1eb5b13aa568174a242d)
 
 - **💼 Smart Wallet Integration**  
   Seamlessly connect and interact using integrated smart wallets for a smooth web3 experience.
@@ -66,7 +67,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 |------------|-----------------------------------|
 | Frontend   | Next.js, TypeScript, TailwindCSS  |
 | Blockchain | Base Network, OnchainKit          |
-| AI Layer   | Custom LLM + Image Generator      |
+| AI Layer   | Image Generating AI Models    |
 | Wallet     | Smart Wallet Integration          |
 | Hosting    | Vercel                            |
 
@@ -74,5 +75,32 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 ## 📦 Getting Started
 
-Clone and run locally:
+First, install dependencies:
+
+bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+
+
+Next, run the development server:
+
+bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying app/page.tsx. The page auto-updates as you edit the file.
+
 
