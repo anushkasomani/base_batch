@@ -34,7 +34,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
   Reach point milestones to evolve your pet. Each level unlocks new AI-generated story elements and visuals.
 
 - **🌐 View Minted NFTs**  
-  Explore all minted NFT pets Here([https://avjhwdjhbwd.com](https://opensea.io/collection/basehackathonproject))
+  Explore all minted NFT pets [Here](https://opensea.io/collection/basehackathonproject)
 
 ---
 
