@@ -15,7 +15,7 @@ export default function HomepagePreview() {
       try {
         setLoading(true);
         const provider = new JsonRpcProvider(
-          process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_URL
         );
         const contract = new Contract(contractAddress, abi, provider);
 
