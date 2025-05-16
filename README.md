@@ -95,7 +95,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 ---
 
-## 📦 Getting Started
+
 
 
 
