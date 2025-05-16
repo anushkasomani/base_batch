@@ -193,7 +193,7 @@ export function ImageResultDisplay({
             >
               Create
             </Button> */}
-            <Transaction chainId={84532} calls={handleMintNFT}>
+            <Transaction chainId={8453} calls={handleMintNFT}>
               <TransactionButton
                 className="outline sm bg-[#2D80C0] font-pixelify text-black hover:bg-[#C9C9AA]"
                 text="Mint NFT"

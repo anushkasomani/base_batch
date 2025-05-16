@@ -84,9 +84,7 @@ export default function PetCard({
       updatedAttrs.find((a) => a.trait_type === "Multiplier")?.value ?? 1;
     const points = parseFloat(((happiness + power) * multiplier).toFixed(2));
 
-    const existingPoints = updatedAttrs.find(
-      (a) => a.trait_type === "Points"
-    );
+    const existingPoints = updatedAttrs.find((a) => a.trait_type === "Points");
     if (existingPoints) {
       existingPoints.value = points;
     } else {
@@ -230,7 +228,7 @@ export default function PetCard({
   );
 
   return (
-<div className="relative w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 transform transition duration-300 ease-in-out hover:scale-[1.1] hover:shadow-xl">
+    <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 transform transition duration-300 ease-in-out hover:scale-[1.1] hover:shadow-xl">
       <div className="relative w-full h-72 bg-gray-100">
         <img
           src={imageSrc}
@@ -241,11 +239,21 @@ export default function PetCard({
           }
         />
         <div className="absolute top-3 right-3 flex flex-col gap-2">
-          <Transaction chainId={84532} calls={feed} onStatus={handleFeedStatus}>
-            <TransactionButton text="Feed" className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full text-sm font-semibold font-courier-prime" />
+          <Transaction chainId={8453} calls={feed} onStatus={handleFeedStatus}>
+            <TransactionButton
+              text="Feed"
+              className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-sm text-sm font-semibold font-courier-prime"
+            />
           </Transaction>
-          <Transaction chainId={84532} calls={train} onStatus={handleTrainStatus}>
-            <TransactionButton text="Train" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full text-sm font-semibold font-courier-prime" />
+          <Transaction
+            chainId={8453}
+            calls={train}
+            onStatus={handleTrainStatus}
+          >
+            <TransactionButton
+              text="Train"
+              className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-sm text-sm font-semibold font-courier-prime"
+            />
           </Transaction>
         </div>
       </div>
