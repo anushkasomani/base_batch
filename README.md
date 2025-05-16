@@ -88,7 +88,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 | Layer      | Tech                              |
 |------------|-----------------------------------|
 | Frontend   | Next.js, TypeScript, TailwindCSS  |
-| Blockchain | Base Network, OnchainKit          |
+| Blockchain | Base Network, Irys, OnchainKit          |
 | AI Layer   | Image Generating AI Models    |
 | Wallet     | Smart Wallet Integration          |
 | Hosting    | Vercel                            |
