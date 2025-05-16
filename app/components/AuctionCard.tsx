@@ -14,7 +14,6 @@ import {
 } from "@coinbase/onchainkit/transaction";
 import { contractAddress } from "../../utils/contractAddress";
 import abi from "../../utils/abi.json";
-import { useCallback } from "react";
 import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
 
 export default function PetCard({
