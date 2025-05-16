@@ -43,7 +43,7 @@ export default function Navbar() {
           <Link href="/about" className="hover:text-yellow-300 transition-colors">About</Link>
         </li>
         <li>
-          <Link href="/contact" className="hover:text-yellow-300 transition-colors">Contact</Link>
+          <Link href="/guide" className="hover:text-yellow-300 transition-colors">Guide</Link>
         </li>
       </ul>
 
