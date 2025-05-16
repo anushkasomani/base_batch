@@ -20,6 +20,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 - **⛓ On-Chain Pet Minting**  
   Mint your AI-generated pet as a soulbound NFT directly on the Base chain.  
   **Smart Contract Address:** `0xedea62d0b0561c81b60b1eb5b13aa568174a242d`
+  
   **Base Scan:** [Link](https://basescan.org/token/0xedea62d0b0561c81b60b1eb5b13aa568174a242d)
 
 - **💼 Smart Wallet Integration**  
