@@ -48,11 +48,12 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 2. **🎨 Generate & Mint Your Pet**  
    Enter your desired prompts to create a unique AI-generated pet. Customize its look, backstory, and name, then mint it on-chain.
 
-3. **🍗 Feed & 🏋 Train**  
+3. **🍗 Feed & 🏋 Train & Evolve **  
    Boost your pet’s stats:  
    - **Feed:** +5 Happiness, +1 Power, +0.1x Multiplier  
    - **Train:** +1 Happiness, +5 Power, +0.15x Multiplier  
    - **Points:** `(Happiness + Power) × Multiplier`
+   - **Evolve:** +0.5x Multiplier, +1 Level
 
 4. **🌱 Evolve**  
    Reach `Points = 20 × Current Level` to evolve and unlock new traits and story arcs.
