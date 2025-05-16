@@ -21,7 +21,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-courier-prime);
-  cursor: url('/final-cur.png') 0 0, auto;
+  /* cursor: url('/final-cur.png') 0 0, auto; */
 }
 
 .font-pixelify {
