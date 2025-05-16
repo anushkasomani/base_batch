@@ -1,43 +1,50 @@
-# 🐾 ProjectName - The AI NFT Petverse on Base Chain
+# 🐾 Token Tails – The AI NFT Petverse on Base Chain
 
 Where imagination becomes ownership, and your digital pet becomes your on-chain legend.
 
-**ProjectName** is an immersive web3 game where players use AI to create, nurture, and evolve unique NFT pets. Built on the Base chain, each interaction-minting, feeding, training-is a blockchain action, making your pet's journey truly eternal.
+**Token Tails** is an immersive web3 game where players use AI to create, mint, nurture, and evolve unique NFT pets. Built on the Base chain, every interaction-minting, feeding, training-is a blockchain action, making your pet's journey truly eternal.
 
 ---
 
-## 🧬 What Is ProjectName?
+## 🧬 What Is Token Tails?
 
-ProjectName transforms NFTs into evolving companions. It blends AI storytelling, gamified progression, and on-chain interactions to create a living digital world powered by your creativity.
+Token Tails transforms NFTs into evolving companions. Leveraging AI-powered image generation and smart contract technology, it blends creative prompts, gamified progression, and on-chain interactions to create a vibrant digital world powered by your imagination.
 
 ---
 
 ## 🌟 Features
 
-- **🧠 AI-Powered Pet Creation**  
-  Use generative AI to bring your custom pet to life-appearance, name, and a dynamic origin story.
+- **🧠 AI-Powered NFT Pet Creation**  
+  Use generative AI models to bring your custom pet to life. Enter your desired prompts to generate unique pet images, customize their appearance, name, and origin story.
 
 - **⛓ On-Chain Pet Minting**  
-  Own your pet forever. Every creature minted becomes a soulbound NFT on Base.
+  Mint your AI-generated pet as a soulbound NFT directly on the Base chain.  
+  **Smart Contract Address:** `0x1234`
+
+- **💼 Smart Wallet Integration**  
+  Seamlessly connect and interact using integrated smart wallets for a smooth web3 experience.
 
 - **💪 Feed & Train System**  
-  Boost Happiness, Power, and Multiplier to grow your pet’s strength and ranking.
+  Boost your pet’s Happiness, Power, and Multiplier to increase their strength and leaderboard ranking.
+
+- **🏆 Competitive Leaderboard**  
+  Compete with other users to rank at the top of the leaderboard by feeding and training your pets to increase their points.
 
 - **🦋 Evolution Mechanism**  
   Reach point milestones to evolve your pet. Each level unlocks new AI-generated story elements and visuals.
 
-- **🏆 Leaderboard & Clout**  
-  Compete to rank the happiest, strongest pets on the network and earn rewards.
+- **🌐 View Minted NFTs**  
+  Explore all minted NFT pets at [avjhwdjhbwd.com](https://avjhwdjhbwd.com)
 
 ---
 
 ## 🎮 How to Play
 
 1. **🔓 Connect Wallet**  
-   Login with a smart wallet to begin your adventure.
+   Login with your smart wallet to begin your adventure.
 
 2. **🎨 Generate & Mint Your Pet**  
-   Customize its look, backstory, and name. Then mint it on-chain.
+   Enter your desired prompts to create a unique AI-generated pet. Customize its look, backstory, and name, then mint it on-chain.
 
 3. **🍗 Feed & 🏋 Train**  
    Boost your pet’s stats:  
@@ -49,7 +56,7 @@ ProjectName transforms NFTs into evolving companions. It blends AI storytelling,
    Reach `Points = 20 × Current Level` to evolve and unlock new traits and story arcs.
 
 5. **📈 Climb the Leaderboard**  
-   Dominate the ranks and showcase your pet’s fame.
+   Feed and train your pets to increase their points and compete for the top spot on the leaderboard.
 
 ---
 
