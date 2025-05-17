@@ -63,6 +63,16 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 ---
 
+
+## Project Architechture :
+![WhatsApp Image 2025-05-17 at 05 31 56_e0e4c6ff](https://github.com/user-attachments/assets/815a64e0-50fb-4cba-a183-a2a4a1a2021e)
+
+## 📸 Screenshots
+
+### Home Page  
+>>>>>>> main
+<img width="959" alt="1" src="https://github.com/user-attachments/assets/0f899c26-935f-43d9-9203-4e9d6ea2689e" />
+
 ## 📸 Screenshots
 
 ### Home Page  
