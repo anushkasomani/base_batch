@@ -112,7 +112,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 ```bash
 git clone https://github.com/anushkasomani/base_batch
-cd token-tails
+cd base_batch
 ```
 2. **create .env**
 ```bash
