@@ -101,6 +101,25 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 
 ---
 
+## Our Team ✨
+
+We are a team of three developers:
+
+### Anushka Somani  
+**Role:** Frontend & Backend Developer [Github](https://github.com/anushkasomani)
+
+### Akash Mundari  
+**Role:** Backend & Smart Contract Developer 
+[Github](https://github.com/AkashMundari)
+
+
+### Avula Ramswaroop  
+**Role:** Frontend & Deployment 
+[Github](https://github.com/AvulaRamSwaroop)
+
+---
+
+
 ## 🚀 Getting Started
 
 ### Installation Process:
