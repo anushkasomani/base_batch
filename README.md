@@ -4,6 +4,14 @@ Where imagination becomes ownership, and your digital pet becomes your on-chain 
 
 **Token Tails** is an immersive web3 game where players use AI to create, mint, nurture, and evolve unique NFT pets. Built on the Base chain, every interaction-minting, feeding, training-is a blockchain action, making your pet's journey truly eternal.
 
+
+
+**Smart Contract Deployment (Tx hash) :** `0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34` [Link](https://basescan.org/tx/0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34)
+
+**Transactions On Mainnet :** [Link](https://basescan.org/token/0xedea62d0b0561c81b60b1eb5b13aa568174a242d)
+
+**Smart Contract Address:** `0xedea62d0b0561c81b60b1eb5b13aa568174a242d`  
+
 ---
 
 ## 🧬 What Is Token Tails?
@@ -22,7 +30,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
 - **⛓ On-Chain Pet Minting**  
   Mint your AI-generated pet as a soulbound NFT directly on the Base chain.  
 
-  **Smart Contract Address:** `0xedea62d0b0561c81b60b1eb5b13aa568174a242d`  
+  
 
   **Base Scan:** [Link](https://basescan.org/token/0xedea62d0b0561c81b60b1eb5b13aa568174a242d)
 
