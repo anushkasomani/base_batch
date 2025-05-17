@@ -14,7 +14,7 @@ export default function TrendingPage() {
     const fetchLeaderboardData = async () => {
       try {
         const provider = new JsonRpcProvider(
-          process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_URL
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_KEY
         );
         const contract = new Contract(contractAddress, abi, provider);
         const totalSupply = await contract.totalSupply();
