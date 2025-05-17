@@ -62,6 +62,7 @@ Token Tails transforms NFTs into evolving companions. Leveraging AI-powered imag
    Feed and train your pets to increase their points and compete for the top spot on the leaderboard.
 
 ---
+## Project Architechture 
 
 ## 📸 Screenshots
 ### Home Page
