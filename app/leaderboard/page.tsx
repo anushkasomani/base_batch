@@ -14,7 +14,7 @@ export default function TrendingPage() {
     const fetchLeaderboardData = async () => {
       try {
         const provider = new JsonRpcProvider(
-          process.env.NEXT_PUBLIC_ALCHEMY_BASE_SEPOLIA_URL
+          process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_URL
         );
         const contract = new Contract(contractAddress, abi, provider);
         const totalSupply = await contract.totalSupply();
@@ -132,8 +132,32 @@ export default function TrendingPage() {
               </table>
             </div>
           )}
-        </div>
+           <div className="w-4/5 mx-auto mt-6 mb-8 p-4 bg-blue-100 border-l-4 border-blue-400 rounded text-blue-900 text-center text-lg font-semibold shadow">
+        <span>View the collectibles on </span>
+        <a
+          href="https://opensea.io/collection/basehackathonproject"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-700 underline hover:text-blue-500 mx-1"
+        >
+          OpenSea
+        </a>
+        <span>and</span>
+        <a
+          href="https://basescan.org/nft/0xedea62d0b0561c81b60b1eb5b13aa568174a242d/7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-700 underline hover:text-blue-500 mx-1"
+        >
+          BaseScan
+        </a>
+        <span>!</span>
       </div>
+        </div>
+        
+      </div>
+     
+     
     </div>
   );
 }
