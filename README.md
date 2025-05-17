@@ -6,7 +6,7 @@ Where imagination becomes ownership, and your digital pet becomes your on-chain 
 
 
 
-**Smart Contract Deployment (Tx hash) :** `0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34` [Link](https://basescan.org/tx/0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34)
+**Smart Contract Deployment (Tx hash on Mainnet) :** `0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34` [Link](https://basescan.org/tx/0x2d040cffe928227757a7a9a37ac2d607eed423996c66dcbb323b875491a0ba34)
 
 **Transactions On Mainnet :** [Link](https://basescan.org/token/0xedea62d0b0561c81b60b1eb5b13aa568174a242d)
 
