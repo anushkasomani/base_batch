@@ -10,7 +10,7 @@ Where imagination becomes ownership, and your digital pet becomes your on-chain 
 
 Token Tails transforms NFTs into evolving companions. Leveraging AI-powered image generation and smart contract technology, it blends creative prompts, gamified progression, and on-chain interactions to create a vibrant digital world powered by your imagination.  
 
--Deployed Link: [Token Tails](https://tokentailsbase.vercel.app/)
+**Deployed Link:** [Token Tails](https://tokentailsbase.vercel.app/)
 
 ---
 
